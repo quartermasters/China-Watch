@@ -28,6 +28,13 @@ class Router
             $uri = substr($uri, 0, -1);
         }
 
+        // Dynamic Route: Data Pages (e.g., /data/SHANGHAI_PORT)
+        if (preg_match('#^/data/([a-zA-Z0-9-_]+)$#', $uri, $matches)) {
+            $controller = new \RedPulse\Controllers\DataController();
+            $controller->show($matches[1]);
+            return;
+        }
+
         if (isset($this->routes[$method][$uri])) {
             [$class, $function] = $this->routes[$method][$uri];
             $controller = new $class();
