@@ -20,6 +20,10 @@
 
     <!-- HTMX -->
     <script src="https://unpkg.com/htmx.org@1.9.10"></script>
+
+    <!-- Google AdSense (Placeholder) -->
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-xxxxxxxxxxxx"
+        crossorigin="anonymous"></script>
 </head>
 
 <body>
@@ -51,21 +55,27 @@
     </div>
 
     <!-- AI Analyst Widget -->
-    <div id="ai-widget" style="position:fixed; bottom:20px; right:20px; width:350px; background:var(--bg-surface); border:1px solid var(--signal-blue); border-radius:12px; overflow:hidden; z-index:100;">
-        <div class="chat-header" style="background:var(--signal-blue); padding:10px; font-family:var(--font-mono); font-weight:bold; cursor:pointer;" onclick="document.getElementById('chat-body').classList.toggle('hidden')">
+    <div id="ai-widget"
+        style="position:fixed; bottom:20px; right:20px; width:350px; background:var(--bg-surface); border:1px solid var(--signal-blue); border-radius:12px; overflow:hidden; z-index:100;">
+        <div class="chat-header"
+            style="background:var(--signal-blue); padding:10px; font-family:var(--font-mono); font-weight:bold; cursor:pointer;"
+            onclick="document.getElementById('chat-body').classList.toggle('hidden')">
             // RED PULSE ANALYST
         </div>
         <div id="chat-body" class="hidden" style="height:300px; display:flex; flex-direction:column;">
             <div id="chat-history" style="flex:1; padding:10px; overflow-y:auto; font-size:0.9rem;">
                 <div class="message bot" style="color:var(--signal-blue)">System Online. Awaiting query.</div>
             </div>
-            <form hx-post="/api/chat" hx-target="#chat-history" hx-swap="beforeend" style="display:flex; border-top:1px solid var(--border-subtle);">
-                <input type="text" name="question" placeholder="Ask about China's economy..." style="flex:1; background:var(--bg-void); color:white; border:none; padding:10px; outline:none;">
-                <button type="submit" style="background:var(--bg-surface); color:var(--signal-blue); border:none; padding:0 15px; cursor:pointer;">></button>
+            <form hx-post="/api/chat" hx-target="#chat-history" hx-swap="beforeend"
+                style="display:flex; border-top:1px solid var(--border-subtle);">
+                <input type="text" name="question" placeholder="Ask about China's economy..."
+                    style="flex:1; background:var(--bg-void); color:white; border:none; padding:10px; outline:none;">
+                <button type="submit"
+                    style="background:var(--bg-surface); color:var(--signal-blue); border:none; padding:0 15px; cursor:pointer;">></button>
             </form>
         </div>
     </div>
-    
+
     <!-- Cookie Banner (Placeholder for Strategy) -->
     <div id="cookie-consent"></div>
 </body>

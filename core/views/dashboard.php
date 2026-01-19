@@ -42,6 +42,28 @@
         <div id="map" style="width:100%; height:100%;"></div>
     </div>
 
+    <!-- Ad Slot B: Context Tile -->
+    <div class="tile ad-unit">
+        <!-- Placeholder for Google Ad Unit -->
+        <div style="text-align:center; color:var(--text-muted); font-family:var(--font-mono); font-size:0.8rem;">
+            [AD SPACE RESERVED]
+            <br>
+            250x250
+        </div>
+        <!-- 
+        Uncomment when ID available:
+        <ins class="adsbygoogle"
+             style="display:block"
+             data-ad-client="ca-pub-xxxxxxxxxxxx"
+             data-ad-slot="1234567890"
+             data-ad-format="auto"
+             data-full-width-responsive="true"></ins>
+        <script>
+             (adsbygoogle = window.adsbygoogle || []).push({});
+        </script>
+        -->
+    </div>
+
     <!-- Map Script -->
     <script>
         function initMap() {
