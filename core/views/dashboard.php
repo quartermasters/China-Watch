@@ -38,14 +38,51 @@
     </div>
 
     <!-- Map Container -->
-    <div class="tile wide tall"
-        style="min-height: 400px; display:flex; align-items:center; justify-content:center; background: #000;">
-        <div class="placeholder-map font-mono text-secondary">
-            [GLOBAL PROXY MAP RENDERER REQUESTED]
-            <br>
-            <span style="font-size:0.8rem">Google Maps API Integration Pending</span>
-        </div>
+    <div class="tile wide tall" style="min-height: 400px; padding:0; overflow:hidden;">
+        <div id="map" style="width:100%; height:100%;"></div>
     </div>
+
+    <!-- Map Script -->
+    <script>
+        function initMap() {
+            const shanghai = { lat: 31.2304, lng: 121.4737 };
+            const map = new google.maps.Map(document.getElementById("map"), {
+                zoom: 11,
+                center: shanghai,
+                disableDefaultUI: true,
+                styles: [
+                    { elementType: "geometry", stylers: [{ color: "#212121" }] },
+                    { elementType: "labels.icon", stylers: [{ visibility: "off" }] },
+                    { elementType: "labels.text.fill", stylers: [{ color: "#757575" }] },
+                    { elementType: "labels.text.stroke", stylers: [{ color: "#212121" }] },
+                    { featureType: "administrative", elementType: "geometry", stylers: [{ color: "#757575" }] },
+                    { featureType: "administrative.country", elementType: "labels.text.fill", stylers: [{ color: "#9e9e9e" }] },
+                    { featureType: "administrative.land_parcel", stylers: [{ visibility: "off" }] },
+                    { featureType: "administrative.locality", elementType: "labels.text.fill", stylers: [{ color: "#bdbdbd" }] },
+                    { featureType: "poi", elementType: "labels.text.fill", stylers: [{ color: "#757575" }] },
+                    { featureType: "poi.park", elementType: "geometry", stylers: [{ color: "#181818" }] },
+                    { featureType: "poi.park", elementType: "labels.text.fill", stylers: [{ color: "#616161" }] },
+                    { featureType: "road", elementType: "geometry.fill", stylers: [{ color: "#2c2c2c" }] },
+                    { featureType: "road", elementType: "labels.text.fill", stylers: [{ color: "#8a8a8a" }] },
+                    { featureType: "road.arterial", elementType: "geometry", stylers: [{ color: "#373737" }] },
+                    { featureType: "road.highway", elementType: "geometry", stylers: [{ color: "#3c3c3c" }] },
+                    { featureType: "road.highway.controlled_access", elementType: "geometry", stylers: [{ color: "#4e4e4e" }] },
+                    { featureType: "road.local", elementType: "labels.text.fill", stylers: [{ color: "#616161" }] },
+                    { featureType: "transit", elementType: "labels.text.fill", stylers: [{ color: "#757575" }] },
+                    { featureType: "water", elementType: "geometry", stylers: [{ color: "#000000" }] },
+                    { featureType: "water", elementType: "labels.text.fill", stylers: [{ color: "#3d3d3d" }] }
+                ]
+            });
+
+            new google.maps.Marker({
+                position: shanghai,
+                map: map,
+                title: "Shanghai Port High Activity"
+            });
+        }
+    </script>
+    <script src="https://maps.googleapis.com/maps/api/js?key=<?= GOOGLE_MAPS_KEY ?>&callback=initMap" async
+        defer></script>
 
     <!-- Context Tile -->
     <div class="tile tall">
