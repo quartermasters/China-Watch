@@ -103,7 +103,7 @@ class Spider
 
         // 2. Fallback: Deep Link Hunter (If still on Google)
         if (strpos($finalUrl, 'news.google.com') !== false || strpos($finalUrl, 'google.com/consent') !== false) {
-            echo "      -> Detected Google Page. Initiating Deep Link Hunter...\n";
+            echo "      -> Detected Google Page. Initiating Deep Link Hunter [DEBUG_V3]...\n";
 
             $realUrl = $this->hunt_deep_link_regex($html);
 
@@ -145,10 +145,13 @@ class Spider
 
         foreach ($candidates as $candidate) {
             $candidate = stripslashes($candidate);
+            $candidate = trim($candidate, "\\/\"'"); // Additional trim
 
             // Filter Junk - STRICT LIST
             if (strpos($candidate, 'google.') !== false)
                 continue;
+            if (strpos($candidate, 'googleapis.') !== false)
+                continue; // New
             if (strpos($candidate, 'gstatic.') !== false)
                 continue;
             if (strpos($candidate, 'googleusercontent.') !== false)
@@ -169,13 +172,18 @@ class Spider
                 continue;
 
             // Filter common assets
-            if (preg_match('/\.(css|js|png|jpg|svg|ico|gif|woff|ttf)$/i', $candidate))
+            if (preg_match('/\.(css|js|png|jpg|jpeg|svg|ico|gif|woff|ttf|eot)$/i', $candidate))
+                continue;
+
+            // Filter by subdomains logic if needed
+            if (strpos($candidate, 'fonts.') !== false)
                 continue;
 
             // Must be a substantial link
             if (strlen($candidate) < 15)
                 continue;
 
+            // Log acceptance? No, too noisy.
             return $candidate;
         }
 
