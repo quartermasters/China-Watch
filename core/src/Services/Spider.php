@@ -11,7 +11,6 @@ class Spider
 {
     /**
      * The Main Crawl Loop
-     * Can be called by cron for a specific source OR a topic.
      */
     public function crawl_source(int $sourceId): array
     {
@@ -54,10 +53,14 @@ class Spider
             if (!empty($exists))
                 continue;
 
-            // DECODE GOOGLE NEWS LINK
-            $realUrl = $this->resolve_google_news_link($link);
             echo "   Found: {$title}\n";
-            echo "   -> Resolved: $realUrl\n";
+
+            // 1. TRY DECODING (Best Method - Bypasses Google)
+            $realUrl = $this->resolve_google_news_link($link);
+
+            if ($realUrl !== $link) {
+                echo "   -> Decoded Base64: $realUrl\n";
+            }
 
             $result = $this->process_url($realUrl, "Google News: {$topic['keyword']}");
 
@@ -80,35 +83,51 @@ class Spider
      */
     private function resolve_google_news_link(string $url): string
     {
-        // 1. Check for Base64 pattern (usually after 'articles/')
         if (preg_match('/articles\/([a-zA-Z0-9\-_]+)/', $url, $matches)) {
             $base64 = $matches[1];
-
-            // 2. Decode
-            // Determine if it needs URL-safe decoding fixes
             $decoded = base64_decode($base64);
             if ($decoded) {
-                // 3. Find URL inside binary mess
-                // Look for http/https followed by legitimate chars
+                // Clean non-printable chars from protobuf
                 if (preg_match('/(https?:\/\/[a-zA-Z0-9\-\._~:\/\?#\[\]@!$&\'\(\)\*\+,;=]+)/i', $decoded, $urlMatches)) {
                     return $urlMatches[1];
                 }
             }
         }
-        return $url; // Fallback to original
+        return $url;
     }
 
     private function process_url(string $url, string $sourceName): array
     {
         // 1. Fetch
-        $html = $this->fetch($url);
-        if (!$html)
+        $response = $this->fetch_with_info($url);
+        if (!$response['content'])
             return ['status' => 'error', 'message' => 'Connection Failed/Blocked (403/404)'];
 
-        // 2. Extract Data
-        $data = $this->extract($html);
+        $html = $response['content'];
+        $finalUrl = $response['url'];
 
-        // 3. Stats Check
+        // 2. Fallback: Soft Redirects (If Decoding Failed)
+        if (strpos($finalUrl, 'news.google.com') !== false || strpos($finalUrl, 'google.com/consent') !== false) {
+            echo "      -> Still on Google. Attempting soft-redirect unmasking...\n";
+
+            $realUrl = null;
+            if (preg_match('/window\.location\.replace\("([^"]+)"\)/', $html, $matches)) {
+                $realUrl = $matches[1];
+            } elseif (preg_match('/<a href="([^"]+)"[^>]+>Read full/i', $html, $matches)) {
+                $realUrl = $matches[1];
+            }
+
+            if ($realUrl && $realUrl !== $url) {
+                echo "      -> Unmasked Target: $realUrl\n";
+                // Recursion
+                return $this->process_url($realUrl, $sourceName);
+            } else {
+                return ['status' => 'skipped', 'message' => "Stuck on Google Consent Page."];
+            }
+        }
+
+        // 3. Extract Data
+        $data = $this->extract($html);
         $len = strlen($data['text']);
         echo "      -> Content Length: {$len} chars\n";
 
@@ -118,15 +137,18 @@ class Spider
 
         // 4. Send to The Analyst
         $analyst = new \RedPulse\Services\AI\ReportGenerator();
-        $reportId = $analyst->generate_report($sourceName, $url, $data['text']);
+        $reportId = $analyst->generate_report($sourceName, $finalUrl, $data['text']);
 
         return ['status' => 'success', 'action' => 'report_generated', 'report_id' => $reportId];
     }
 
-    /**
-     * Robust HTTP Client (Stealth Mode + GZIP + IPv4)
-     */
     private function fetch(string $url): ?string
+    {
+        $res = $this->fetch_with_info($url);
+        return $res['content'];
+    }
+
+    private function fetch_with_info(string $url): array
     {
         $agents = [
             'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/121.0.0.0 Safari/537.36',
@@ -140,12 +162,9 @@ class Spider
         curl_setopt($ch, CURLOPT_MAXREDIRS, 7);
         curl_setopt($ch, CURLOPT_TIMEOUT, 45);
 
-        // VITAL FIX: Handle GZIP automatically
         curl_setopt($ch, CURLOPT_ENCODING, '');
-        // VITAL FIX: Force IPv4 to avoid some blocklists
         curl_setopt($ch, CURLOPT_IPRESOLVE, CURL_IPRESOLVE_V4);
 
-        // Browser Headers
         $headers = [
             'Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8',
             'Accept-Language: en-US,en;q=0.9',
@@ -154,55 +173,48 @@ class Spider
         ];
         curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
 
-        // Cookie Handling
         $cookieFile = sys_get_temp_dir() . '/spider_cookie.txt';
         curl_setopt($ch, CURLOPT_COOKIEJAR, $cookieFile);
         curl_setopt($ch, CURLOPT_COOKIEFILE, $cookieFile);
 
-        // SSL verification
         curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
         curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false);
 
         $output = curl_exec($ch);
-        $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+        $info = curl_getinfo($ch);
         curl_close($ch);
 
-        if ($httpCode >= 200 && $httpCode < 400 && $output) {
-            return $output;
-        }
-
-        // Fallback: file_get_contents
-        if ($httpCode === 403 || empty($output)) {
+        $content = null;
+        if ($info['http_code'] >= 200 && $info['http_code'] < 400 && $output) {
+            $content = $output;
+        } else if ($info['http_code'] == 403 || empty($output)) {
             $context = stream_context_create([
                 'http' => [
-                    'header' => "User-Agent: " . $agents[0] . "\r\n" .
-                        "Accept: text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8\r\n",
+                    'header' => "User-Agent: " . $agents[0] . "\r\n",
                     'follow_location' => 1,
                     'timeout' => 30
                 ]
             ]);
             $fallback = @file_get_contents($url, false, $context);
             if ($fallback)
-                return $fallback;
+                $content = $fallback;
         }
 
-        return null;
+        return [
+            'content' => $content,
+            'url' => $info['url'],
+            'http_code' => $info['http_code']
+        ];
     }
 
-    /**
-     * Content Extraction Engine (Improved)
-     */
     private function extract(string $html): array
     {
         libxml_use_internal_errors(true);
         $dom = new DOMDocument();
-        // UTF-8 Hack to prevent encoding issues
         @$dom->loadHTML('<?xml encoding="UTF-8">' . $html);
         libxml_clear_errors();
-
         $xpath = new DOMXPath($dom);
 
-        // Remove junk
         $junkTags = ['script', 'style', 'nav', 'footer', 'header', 'aside', 'iframe', 'noscript', 'form', 'button', 'svg', 'ad', 'place'];
         foreach ($junkTags as $tag) {
             $nodes = $xpath->query("//{$tag}");
@@ -213,7 +225,6 @@ class Spider
 
         $text = '';
         $article = $dom->getElementsByTagName('article')->item(0);
-
         if ($article) {
             $text = $article->textContent;
         } else {
