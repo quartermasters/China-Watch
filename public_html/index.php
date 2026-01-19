@@ -13,6 +13,10 @@ $router = new Router();
 // Dashboard
 $router->get('/', [DashboardController::class, 'index']);
 
+// Contact (Pages + Actions)
+$router->get('/contact', [\RedPulse\Controllers\ContactController::class, 'index']);
+$router->post('/contact', [\RedPulse\Controllers\ContactController::class, 'send']);
+
 // Static Pages
 $router->get('/about', [\RedPulse\Controllers\StaticController::class, 'about']);
 $router->get('/methodology', [\RedPulse\Controllers\StaticController::class, 'methodology']);
