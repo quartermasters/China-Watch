@@ -13,6 +13,12 @@ $router = new Router();
 // Dashboard
 $router->get('/', [DashboardController::class, 'index']);
 
+// Static Pages
+$router->get('/about', [\RedPulse\Controllers\StaticController::class, 'about']);
+$router->get('/methodology', [\RedPulse\Controllers\StaticController::class, 'methodology']);
+$router->get('/privacy', [\RedPulse\Controllers\StaticController::class, 'privacy']);
+$router->get('/terms', [\RedPulse\Controllers\StaticController::class, 'terms']);
+
 // HTMX Endpoints
 $router->get('/api/ticker', [DashboardController::class, 'ticker']);
 $router->post('/api/chat', [\RedPulse\Controllers\ChatController::class, 'ask']);
