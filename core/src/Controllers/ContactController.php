@@ -40,7 +40,7 @@ class ContactController
         // 3. Prepare Email
         // Uses the 'noreply' sender to protect your personal identity
         $to = 'haroon@quartermasters.me'; // HARDCODED for MVP, or use env('ADMIN_EMAIL')
-        $subject = "Red Pulse Comms: $name";
+        $subject = "China Watch Comms: $name";
 
         $body = "New secure transmission:\n\n";
         $body .= "From: $name\n";

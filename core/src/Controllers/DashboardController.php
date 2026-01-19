@@ -23,7 +23,7 @@ class DashboardController
 
         View::render('dashboard', [
             'signals' => $signals,
-            'page_title' => 'Red Pulse | Signal Intelligence'
+            'page_title' => 'China Watch | Signal Intelligence'
         ]);
     }
 

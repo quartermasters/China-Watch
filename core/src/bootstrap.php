@@ -6,7 +6,7 @@ require_once __DIR__ . '/../config/env.php';
 
 // Valid PHP Version Check
 if (version_compare(PHP_VERSION, '8.1.0', '<')) {
-    die('Red Pulse requires PHP 8.1 or higher.');
+    die('China Watch requires PHP 8.1 or higher.');
 }
 
 // Autoloader (PSR-4 simplified)
