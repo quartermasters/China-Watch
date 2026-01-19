@@ -26,7 +26,7 @@ class AIAnalyst
         }
 
         $data = [
-            'model' => 'gpt-4o-mini', // Cost-effective
+            'model' => 'gpt-5.2', // High-fidelity Intelligence
             'messages' => [
                 ['role' => 'system', 'content' => $systemPrompt],
                 ['role' => 'user', 'content' => $userQuestion]

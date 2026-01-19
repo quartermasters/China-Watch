@@ -62,6 +62,20 @@ class Router
             return;
         }
 
+        // Dynamic Route: Single Report (e.g., /reports/analysis-123)
+        if (preg_match('#^/reports/([a-zA-Z0-9-_]+)$#', $uri, $matches)) {
+            $controller = new \RedPulse\Controllers\ReportController();
+            $controller->show($matches[1]);
+            return;
+        }
+
+        // Static Route for Reports Archive
+        if ($uri === '/reports') {
+            $controller = new \RedPulse\Controllers\ReportController();
+            $controller->index();
+            return;
+        }
+
         if (isset($this->routes[$method][$uri])) {
             [$class, $function] = $this->routes[$method][$uri];
             $controller = new $class();
