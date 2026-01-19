@@ -139,19 +139,25 @@ class Spider
     private function hunt_deep_link_regex(string $html): ?string
     {
         // Find all http/https strings
-        // This is a "Shotgun" approach: Find EVERYTHING, filter broadly.
         preg_match_all('/https?:\/\/[^\s"\'<>\\\\]+/', $html, $matches);
 
         $candidates = $matches[0] ?? [];
 
         foreach ($candidates as $candidate) {
-            // Clean escaped slashes if any (e.g. https:\/\/...)
             $candidate = stripslashes($candidate);
 
-            // Filter Junk
+            // Filter Junk - STRICT LIST
             if (strpos($candidate, 'google.') !== false)
                 continue;
             if (strpos($candidate, 'gstatic.') !== false)
+                continue;
+            if (strpos($candidate, 'googleusercontent.') !== false)
+                continue;
+            if (strpos($candidate, 'ggpht.') !== false)
+                continue;
+            if (strpos($candidate, 'youtube.') !== false)
+                continue;
+            if (strpos($candidate, 'blogger.') !== false)
                 continue;
             if (strpos($candidate, 'w3.org') !== false)
                 continue;
@@ -163,15 +169,13 @@ class Spider
                 continue;
 
             // Filter common assets
-            if (preg_match('/\.(css|js|png|jpg|svg|ico)$/i', $candidate))
+            if (preg_match('/\.(css|js|png|jpg|svg|ico|gif|woff|ttf)$/i', $candidate))
                 continue;
 
             // Must be a substantial link
             if (strlen($candidate) < 15)
                 continue;
 
-            // If we are here, it's likely the external article link
-            // Google Consent pages usually contain VERY FEW external links, basically just the target.
             return $candidate;
         }
 
