@@ -30,6 +30,10 @@ body {
     font-family: var(--font-mono);
 }
 
+.hidden {
+    display: none !important;
+}
+
 .text-red {
     color: var(--signal-red);
 }

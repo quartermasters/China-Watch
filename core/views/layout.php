@@ -76,9 +76,9 @@
             <div id="chat-history" style="flex:1; padding:10px; overflow-y:auto; font-size:0.9rem;">
                 <div class="message bot" style="color:var(--signal-blue)">System Online. Awaiting query.</div>
             </div>
-            <form hx-post="/api/chat" hx-target="#chat-history" hx-swap="beforeend"
+            <form hx-post="/api/chat" hx-target="#chat-history" hx-swap="beforeend" hx-on::after-request="this.reset()"
                 style="display:flex; border-top:1px solid var(--border-subtle);">
-                <input type="text" name="question" placeholder="Ask about China's economy..."
+                <input type="text" name="question" placeholder="Ask about China's economy..." autocomplete="off"
                     style="flex:1; background:var(--bg-void); color:white; border:none; padding:10px; outline:none;">
                 <button type="submit"
                     style="background:var(--bg-surface); color:var(--signal-blue); border:none; padding:0 15px; cursor:pointer;">></button>
