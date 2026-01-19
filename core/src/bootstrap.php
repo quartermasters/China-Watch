@@ -2,7 +2,7 @@
 declare(strict_types=1);
 
 // Load Configuration
-require_once __DIR__ . '/../../config/env.php';
+require_once __DIR__ . '/../config/env.php';
 
 // Valid PHP Version Check
 if (version_compare(PHP_VERSION, '8.1.0', '<')) {
