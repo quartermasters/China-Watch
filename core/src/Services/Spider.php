@@ -54,8 +54,12 @@ class Spider
             if (!empty($exists))
                 continue;
 
+            // DECODE GOOGLE NEWS LINK
+            $realUrl = $this->resolve_google_news_link($link);
             echo "   Found: {$title}\n";
-            $result = $this->process_url($link, "Google News: {$topic['keyword']}");
+            echo "   -> Resolved: $realUrl\n";
+
+            $result = $this->process_url($realUrl, "Google News: {$topic['keyword']}");
 
             if ($result['status'] === 'success' && ($result['action'] ?? '') === 'report_generated') {
                 echo "   ✅ SUCCESS: Report generated (ID: {$result['report_id']})\n";
@@ -68,6 +72,30 @@ class Spider
         DB::query("UPDATE topics SET last_crawled_at = NOW() WHERE id = ?", [$topic['id']]);
 
         return ['status' => 'success', 'crawled_count' => $count];
+    }
+
+    /**
+     * Google News Decoder
+     * Extracts the real URL from the protobuf/base64 'CBM' string to avoid redirects/consent walls.
+     */
+    private function resolve_google_news_link(string $url): string
+    {
+        // 1. Check for Base64 pattern (usually after 'articles/')
+        if (preg_match('/articles\/([a-zA-Z0-9\-_]+)/', $url, $matches)) {
+            $base64 = $matches[1];
+
+            // 2. Decode
+            // Determine if it needs URL-safe decoding fixes
+            $decoded = base64_decode($base64);
+            if ($decoded) {
+                // 3. Find URL inside binary mess
+                // Look for http/https followed by legitimate chars
+                if (preg_match('/(https?:\/\/[a-zA-Z0-9\-\._~:\/\?#\[\]@!$&\'\(\)\*\+,;=]+)/i', $decoded, $urlMatches)) {
+                    return $urlMatches[1];
+                }
+            }
+        }
+        return $url; // Fallback to original
     }
 
     private function process_url(string $url, string $sourceName): array
@@ -96,8 +124,7 @@ class Spider
     }
 
     /**
-     * Robust HTTP Client (Stealth Mode)
-     * Mimics a real browser to avoid 403 blocks.
+     * Robust HTTP Client (Stealth Mode + GZIP + IPv4)
      */
     private function fetch(string $url): ?string
     {
@@ -110,33 +137,29 @@ class Spider
         curl_setopt($ch, CURLOPT_URL, $url);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
-        curl_setopt($ch, CURLOPT_MAXREDIRS, 5);
-        curl_setopt($ch, CURLOPT_TIMEOUT, 30);
+        curl_setopt($ch, CURLOPT_MAXREDIRS, 7);
+        curl_setopt($ch, CURLOPT_TIMEOUT, 45);
+
+        // VITAL FIX: Handle GZIP automatically
+        curl_setopt($ch, CURLOPT_ENCODING, '');
+        // VITAL FIX: Force IPv4 to avoid some blocklists
+        curl_setopt($ch, CURLOPT_IPRESOLVE, CURL_IPRESOLVE_V4);
 
         // Browser Headers
         $headers = [
-            'Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8',
+            'Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8',
             'Accept-Language: en-US,en;q=0.9',
-            'Referer: https://www.google.com/',
             'Upgrade-Insecure-Requests: 1',
-            'Sec-Ch-Ua: "Not A(Brand";v="99", "Google Chrome";v="121", "Chromium";v="121"',
-            'Sec-Ch-Ua-Mobile: ?0',
-            'Sec-Ch-Ua-Platform: "Windows"',
-            'Sec-Fetch-Dest: document',
-            'Sec-Fetch-Mode: navigate',
-            'Sec-Fetch-Site: cross-site',
-            'Sec-Fetch-User: ?1',
-            'Connection: keep-alive'
+            'User-Agent: ' . $agents[array_rand($agents)]
         ];
         curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
-        curl_setopt($ch, CURLOPT_USERAGENT, $agents[array_rand($agents)]);
 
-        // Cookie Handling (Important for sessions)
+        // Cookie Handling
         $cookieFile = sys_get_temp_dir() . '/spider_cookie.txt';
         curl_setopt($ch, CURLOPT_COOKIEJAR, $cookieFile);
         curl_setopt($ch, CURLOPT_COOKIEFILE, $cookieFile);
 
-        // SSL verification (Disable for compatibility)
+        // SSL verification
         curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
         curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false);
 
@@ -148,7 +171,7 @@ class Spider
             return $output;
         }
 
-        // Fallback: file_get_contents (sometimes works where cURL fails)
+        // Fallback: file_get_contents
         if ($httpCode === 403 || empty($output)) {
             $context = stream_context_create([
                 'http' => [
@@ -171,16 +194,16 @@ class Spider
      */
     private function extract(string $html): array
     {
-        // Suppress warnings for malformed HTML
         libxml_use_internal_errors(true);
         $dom = new DOMDocument();
-        @$dom->loadHTML($html);
+        // UTF-8 Hack to prevent encoding issues
+        @$dom->loadHTML('<?xml encoding="UTF-8">' . $html);
         libxml_clear_errors();
 
         $xpath = new DOMXPath($dom);
 
-        // Remove junk elements
-        $junkTags = ['script', 'style', 'nav', 'footer', 'header', 'aside', 'iframe', 'noscript', 'form', 'button', 'svg'];
+        // Remove junk
+        $junkTags = ['script', 'style', 'nav', 'footer', 'header', 'aside', 'iframe', 'noscript', 'form', 'button', 'svg', 'ad', 'place'];
         foreach ($junkTags as $tag) {
             $nodes = $xpath->query("//{$tag}");
             foreach ($nodes as $node) {
@@ -188,26 +211,19 @@ class Spider
             }
         }
 
-        // Try to find the semantic elements first
         $text = '';
         $article = $dom->getElementsByTagName('article')->item(0);
-        $main = $dom->getElementsByTagName('main')->item(0);
 
         if ($article) {
             $text = $article->textContent;
-        } elseif ($main) {
-            $text = $main->textContent;
         } else {
-            // Fallback: Look for large divs or body
             $body = $dom->getElementsByTagName('body')->item(0);
             $text = $body ? $body->textContent : '';
         }
 
-        // Clean Whitespace
         $text = preg_replace('/\s+/', ' ', $text);
         $text = trim($text);
 
-        // Extract Title
         $titleNode = $dom->getElementsByTagName('title')->item(0);
         $title = $titleNode ? $titleNode->textContent : 'Unknown Title';
 
