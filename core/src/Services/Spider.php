@@ -175,8 +175,31 @@ class Spider
             if (preg_match('/\.(css|js|png|jpg|jpeg|svg|ico|gif|woff|ttf|eot)$/i', $candidate))
                 continue;
 
-            // Filter by subdomains logic if needed
             if (strpos($candidate, 'fonts.') !== false)
+                continue;
+
+            // Filter Technical/Framework junk
+            if (strpos($candidate, 'angular.') !== false)
+                continue;
+            if (strpos($candidate, 'reactjs.') !== false)
+                continue;
+            if (strpos($candidate, 'vuejs.') !== false)
+                continue;
+            if (strpos($candidate, 'github.') !== false)
+                continue;
+            if (strpos($candidate, 'stackoverflow.') !== false)
+                continue;
+            if (strpos($candidate, 'sentry.io') !== false)
+                continue;
+            if (strpos($candidate, 'license') !== false)
+                continue;
+            if (strpos($candidate, 'privacy') !== false)
+                continue;
+            if (strpos($candidate, 'terms') !== false)
+                continue;
+            if (strpos($candidate, 'cdn.') !== false)
+                continue;
+            if (strpos($candidate, 'assets.') !== false)
                 continue;
 
             // Must be a substantial link
