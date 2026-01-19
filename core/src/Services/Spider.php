@@ -151,10 +151,16 @@ class Spider
             if (strpos($candidate, 'google.') !== false)
                 continue;
             if (strpos($candidate, 'googleapis.') !== false)
-                continue; // New
+                continue;
             if (strpos($candidate, 'gstatic.') !== false)
                 continue;
             if (strpos($candidate, 'googleusercontent.') !== false)
+                continue;
+            if (strpos($candidate, 'googletagmanager.') !== false)
+                continue;
+            if (strpos($candidate, 'googlesyndication.') !== false)
+                continue;
+            if (strpos($candidate, 'doubleclick.') !== false)
                 continue;
             if (strpos($candidate, 'ggpht.') !== false)
                 continue;
