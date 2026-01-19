@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>
-        <?= $page_title ?? 'Red Pulse' ?>
+        <?= $page_title ?? 'China Watch' ?>
     </title>
 
     <!-- Fonts -->
@@ -32,7 +32,7 @@
         <header class="header">
             <div class="logo">
                 <a href="/" style="text-decoration:none; color:inherit;">
-                    Red Pulse // <span style="color:white">China Watch</span>
+                    China Watch // <span style="color:white">Intelligence</span>
                 </a>
             </div>
 
@@ -70,9 +70,9 @@
         <div class="chat-header"
             style="background:var(--signal-blue); padding:10px; font-family:var(--font-mono); font-weight:bold; cursor:pointer;"
             onclick="const body = document.getElementById('chat-body'); body.style.display = (body.style.display === 'none') ? 'flex' : 'none';">
-            // RED PULSE ANALYST
+            // CHINA WATCH ANALYST
         </div>
-        <div id="chat-body" class="hidden" style="height:300px; display:flex; flex-direction:column;">
+        <div id="chat-body" style="display:none; height:300px; flex-direction:column;">
             <div id="chat-history" style="flex:1; padding:10px; overflow-y:auto; font-size:0.9rem;">
                 <div class="message bot" style="color:var(--signal-blue)">System Online. Awaiting query.</div>
             </div>

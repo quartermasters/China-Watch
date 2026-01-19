@@ -18,7 +18,7 @@ class AIAnalyst
         $url = 'https://api.openai.com/v1/chat/completions';
 
         // Build System Prompt with current data context
-        $systemPrompt = "You are 'Red Pulse', an advanced China economic analyst. \n";
+        $systemPrompt = "You are 'China Watch', an advanced China economic analyst. \n";
         $systemPrompt .= "You answer strictly based on the provided Data Context. Be concise, professional, and military-grade in tone. \n\n";
         $systemPrompt .= "DATA CONTEXT: \n";
         foreach ($dataContext as $key => $val) {
