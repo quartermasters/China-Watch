@@ -28,7 +28,9 @@ class Spider
     private array $directFeeds = [
         'globaltimes' => 'https://www.globaltimes.cn/rss/outbrain.xml',
         'chinadaily' => 'http://www.chinadaily.com.cn/rss/china_rss.xml',
+        'chinastartup' => 'http://www.chinadaily.com.cn/rss/bizchina_rss.xml', // Tech/Biz
         'cgtn' => 'https://www.cgtn.com/subscribe/rss/section/china.xml',
+        'technode' => 'https://technode.com/feed/',
     ];
 
     public function crawl_direct_rss(string $feedKey = 'globaltimes'): array
@@ -53,15 +55,25 @@ class Spider
 
             $link = trim((string) ($item->link ?? ''));
             $title = trim((string) ($item->title ?? ''));
+            $pubDate = trim((string) ($item->pubDate ?? $item->dc_date ?? ''));
 
             if (empty($link) || empty($title))
                 continue;
+
+            // DATE FILTER: Skip articles older than 7 days
+            if (!empty($pubDate)) {
+                $timestamp = strtotime($pubDate);
+                if ($timestamp !== false && (time() - $timestamp) > (7 * 86400)) {
+                    // echo "   [Skip] Too Old: " . date('Y-m-d', $timestamp) . "\n";
+                    continue;
+                }
+            }
 
             $exists = DB::query("SELECT id FROM reports WHERE source_url = ?", [$link]);
             if (!empty($exists))
                 continue;
 
-            echo "   Found: {$title}\n";
+            echo "   Found: {$title} (" . ($pubDate ? date('Y-m-d', strtotime($pubDate)) : 'No Date') . ")\n";
 
             // Check for inline content (China Daily has full articles in RSS)
             $content = trim((string) ($item->content ?? $item->description ?? ''));
@@ -198,8 +210,10 @@ class Spider
             if (preg_match_all($pattern, $decoded, $urlMatches)) {
                 foreach ($urlMatches[0] as $candidate) {
                     // Skip Google domains
-                    if (strpos($candidate, 'google.') !== false) continue;
-                    if (strpos($candidate, 'gstatic.') !== false) continue;
+                    if (strpos($candidate, 'google.') !== false)
+                        continue;
+                    if (strpos($candidate, 'gstatic.') !== false)
+                        continue;
                     // Return first valid external URL
                     return rtrim($candidate, '.,;:)}]');
                 }
