@@ -77,17 +77,12 @@ class Spider
         return ['status' => 'success', 'crawled_count' => $count];
     }
 
-    /**
-     * Google News Decoder
-     * Extracts the real URL from the protobuf/base64 'CBM' string to avoid redirects/consent walls.
-     */
     private function resolve_google_news_link(string $url): string
     {
         if (preg_match('/articles\/([a-zA-Z0-9\-_]+)/', $url, $matches)) {
             $base64 = $matches[1];
             $decoded = base64_decode($base64);
             if ($decoded) {
-                // Clean non-printable chars from protobuf
                 if (preg_match('/(https?:\/\/[a-zA-Z0-9\-\._~:\/\?#\[\]@!$&\'\(\)\*\+,;=]+)/i', $decoded, $urlMatches)) {
                     return $urlMatches[1];
                 }
@@ -106,23 +101,18 @@ class Spider
         $html = $response['content'];
         $finalUrl = $response['url'];
 
-        // 2. Fallback: Soft Redirects (If Decoding Failed)
+        // 2. Fallback: Deep Link Hunter (If still on Google)
         if (strpos($finalUrl, 'news.google.com') !== false || strpos($finalUrl, 'google.com/consent') !== false) {
-            echo "      -> Still on Google. Attempting soft-redirect unmasking...\n";
+            echo "      -> Detected Google Page. Initiating Deep Link Hunter...\n";
 
-            $realUrl = null;
-            if (preg_match('/window\.location\.replace\("([^"]+)"\)/', $html, $matches)) {
-                $realUrl = $matches[1];
-            } elseif (preg_match('/<a href="([^"]+)"[^>]+>Read full/i', $html, $matches)) {
-                $realUrl = $matches[1];
-            }
+            $realUrl = $this->hunt_deep_link_regex($html);
 
             if ($realUrl && $realUrl !== $url) {
-                echo "      -> Unmasked Target: $realUrl\n";
+                echo "      -> Unmasked Target (Deep Scan): $realUrl\n";
                 // Recursion
                 return $this->process_url($realUrl, $sourceName);
             } else {
-                return ['status' => 'skipped', 'message' => "Stuck on Google Consent Page."];
+                return ['status' => 'skipped', 'message' => "Stuck on Google Page. Deep Hunter failed."];
             }
         }
 
@@ -140,6 +130,52 @@ class Spider
         $reportId = $analyst->generate_report($sourceName, $finalUrl, $data['text']);
 
         return ['status' => 'success', 'action' => 'report_generated', 'report_id' => $reportId];
+    }
+
+    /**
+     * Scans RAW HTML/JS for ANY external URL.
+     * Use this when DOM parsing fails (e.g. JS variables).
+     */
+    private function hunt_deep_link_regex(string $html): ?string
+    {
+        // Find all http/https strings
+        // This is a "Shotgun" approach: Find EVERYTHING, filter broadly.
+        preg_match_all('/https?:\/\/[^\s"\'<>\\\\]+/', $html, $matches);
+
+        $candidates = $matches[0] ?? [];
+
+        foreach ($candidates as $candidate) {
+            // Clean escaped slashes if any (e.g. https:\/\/...)
+            $candidate = stripslashes($candidate);
+
+            // Filter Junk
+            if (strpos($candidate, 'google.') !== false)
+                continue;
+            if (strpos($candidate, 'gstatic.') !== false)
+                continue;
+            if (strpos($candidate, 'w3.org') !== false)
+                continue;
+            if (strpos($candidate, 'schema.org') !== false)
+                continue;
+            if (strpos($candidate, 'purl.org') !== false)
+                continue;
+            if (strpos($candidate, 'ogp.me') !== false)
+                continue;
+
+            // Filter common assets
+            if (preg_match('/\.(css|js|png|jpg|svg|ico)$/i', $candidate))
+                continue;
+
+            // Must be a substantial link
+            if (strlen($candidate) < 15)
+                continue;
+
+            // If we are here, it's likely the external article link
+            // Google Consent pages usually contain VERY FEW external links, basically just the target.
+            return $candidate;
+        }
+
+        return null;
     }
 
     private function fetch(string $url): ?string
