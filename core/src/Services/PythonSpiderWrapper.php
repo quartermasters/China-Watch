@@ -54,7 +54,7 @@ class PythonSpiderWrapper
 
         $cmd = sprintf(
             '%s %s --url %s --source %s 2>&1',
-            $this->pythonPath,
+            escapeshellarg($this->pythonPath),
             escapeshellarg($script),
             escapeshellarg($url),
             escapeshellarg($sourceName)
