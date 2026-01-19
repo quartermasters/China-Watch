@@ -11,47 +11,89 @@ class Spider
 {
     /**
      * The Main Crawl Loop
-     * Can be called by cron for a specific source or a batch.
+     * Can be called by cron for a specific source OR a topic.
      */
     public function crawl_source(int $sourceId): array
     {
         $source = DB::query("SELECT * FROM sources WHERE id = ?", [$sourceId])[0] ?? null;
-
-        if (!$source) {
+        if (!$source)
             return ['status' => 'error', 'message' => 'Source ID not found'];
+
+        echo "🕷️ Spider Target (Source): {$source['name']} ({$source['url']})...\n";
+        return $this->process_url($source['url'], $source['name']);
+    }
+
+    public function crawl_topic(int $topicId): array
+    {
+        $topic = DB::query("SELECT * FROM topics WHERE id = ?", [$topicId])[0] ?? null;
+        if (!$topic)
+            return ['status' => 'error', 'message' => 'Topic ID not found'];
+
+        echo "🕷️ Spider Target (Topic): {$topic['keyword']}...\n";
+
+        // Use Google News RSS for efficient, structured topic monitoring
+        // URL Encode the query securely
+        $query = urlencode($topic['search_query']);
+        $rssUrl = "https://news.google.com/rss/search?q={$query}&hl=en-US&gl=US&ceid=US:en";
+
+        // Fetch RSS
+        $xmlContent = $this->fetch($rssUrl);
+        if (!$xmlContent)
+            return ['status' => 'error', 'message' => 'RSS Fetch Failed'];
+
+        // Parse RSS
+        $xml = @simplexml_load_string($xmlContent);
+        if (!$xml)
+            return ['status' => 'error', 'message' => 'Invalid RSS XML'];
+
+        // Process top 3 items
+        $count = 0;
+        foreach ($xml->channel->item as $item) {
+            if ($count >= 1)
+                break; // Limit to 1 per run to avoid spamming usage
+
+            $link = (string) $item->link;
+            $title = (string) $item->title;
+
+            // Check if we already have this URL
+            $exists = DB::query("SELECT id FROM reports WHERE source_url = ?", [$link]);
+            if (!empty($exists))
+                continue;
+
+            echo "   Found: {$title}\n";
+            $result = $this->process_url($link, "Google News: {$topic['keyword']}");
+
+            if ($result['status'] === 'success' && ($result['action'] ?? '') === 'report_generated') {
+                $count++;
+            }
         }
 
-        echo "🕷️ Spider Target: {$source['name']} ({$source['url']})...\n";
+        // Update Topic Last Checked
+        DB::query("UPDATE topics SET last_crawled_at = NOW() WHERE id = ?", [$topic['id']]);
 
+        return ['status' => 'success', 'crawled_count' => $count];
+    }
+
+    private function process_url(string $url, string $sourceName): array
+    {
         // 1. Fetch
-        $html = $this->fetch($source['url']);
-
-        if (!$html) {
-            // Log failure
+        $html = $this->fetch($url);
+        if (!$html)
             return ['status' => 'error', 'message' => 'Connection Failed/Blocked'];
-        }
 
-        // 2. Extract Data (Text & Links)
+        // 2. Extract Data
         $data = $this->extract($html);
 
-        // 3. Diff Check (Has content changed significantly?)
-        // For MVP, we just check if we have a recent report for this source.
-        $recentReport = DB::query("SELECT id FROM reports WHERE source_url = ? AND published_at > DATE_SUB(NOW(), INTERVAL 24 HOUR)", [$source['url']]);
-
-        if (!empty($recentReport)) {
-            return ['status' => 'skipped', 'message' => 'Recently analyzed. specific new content triggers not met.'];
+        // 3. Check Stats
+        if (strlen($data['text']) < 1000) {
+            return ['status' => 'skipped', 'message' => 'Content too short (<1000 chars)'];
         }
 
-        // 4. Send to The Analyst (AI) for Processing
-        // We queue a job or call directly. For MVP, call directly.
-        // We only trigger AI if the content looks "meaty" (e.g. > 500 words)
-        if (strlen($data['text']) > 1000) {
-            $analyst = new \RedPulse\Services\AI\ReportGenerator();
-            $reportId = $analyst->generate_report($source['name'], $source['url'], $data['text']);
-            return ['status' => 'success', 'action' => 'report_generated', 'report_id' => $reportId];
-        }
+        // 4. Send to The Analyst
+        $analyst = new \RedPulse\Services\AI\ReportGenerator();
+        $reportId = $analyst->generate_report($sourceName, $url, $data['text']);
 
-        return ['status' => 'success', 'action' => 'monitored_no_action', 'stats' => ['length' => strlen($data['text'])]];
+        return ['status' => 'success', 'action' => 'report_generated', 'report_id' => $reportId];
     }
 
     /**
