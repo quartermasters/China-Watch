@@ -5,13 +5,13 @@
     --bg-surface: #111111;
     --bg-glass: rgba(17, 17, 17, 0.7);
     --border-subtle: rgba(255, 255, 255, 0.1);
-    
+
     /* Signals */
     --signal-red: #FF453A;
     --signal-amber: #FFD60A;
     --signal-green: #32D74B;
     --signal-blue: #0A84FF;
-    
+
     /* Typography */
     --font-ui: 'Inter', system-ui, sans-serif;
     --font-mono: 'JetBrains Mono', 'SF Mono', monospace;
@@ -26,10 +26,21 @@ body {
 }
 
 /* Utilities */
-.font-mono { font-family: var(--font-mono); }
-.text-red { color: var(--signal-red); }
-.text-green { color: var(--signal-green); }
-.text-amber { color: var(--signal-amber); }
+.font-mono {
+    font-family: var(--font-mono);
+}
+
+.text-red {
+    color: var(--signal-red);
+}
+
+.text-green {
+    color: var(--signal-green);
+}
+
+.text-amber {
+    color: var(--signal-amber);
+}
 
 /* Layout */
 .app-container {
@@ -84,8 +95,13 @@ body {
     border-color: rgba(255, 255, 255, 0.2);
 }
 
-.tile.wide { grid-column: span 2; }
-.tile.tall { grid-row: span 2; }
+.tile.wide {
+    grid-column: span 2;
+}
+
+.tile.tall {
+    grid-row: span 2;
+}
 
 /* Ticker (Sidebar) */
 .ticker-panel {
@@ -95,6 +111,65 @@ body {
     overflow-y: auto;
 }
 
+/* Navigation */
+.main-nav {
+    display: flex;
+    gap: 2rem;
+}
+
+.nav-link {
+    color: var(--text-secondary);
+    text-decoration: none;
+    font-family: var(--font-ui);
+    font-size: 0.9rem;
+    font-weight: 500;
+    transition: color 0.2s ease;
+}
+
+.nav-link:hover,
+.nav-link.active {
+    color: #fff;
+}
+
+/* Footer */
+.app-footer {
+    grid-column: 1 / -1;
+    border-top: 1px solid var(--border-subtle);
+    padding: 2rem 0;
+    margin-top: auto;
+    /* Push to bottom if flex container */
+    text-align: center;
+    color: #666;
+    font-size: 0.8rem;
+}
+
+.footer-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+}
+
+.footer-links {
+    display: flex;
+    gap: 1rem;
+    color: #444;
+}
+
+.footer-links a {
+    color: #666;
+    text-decoration: none;
+    transition: color 0.2s;
+}
+
+.footer-links a:hover {
+    color: #999;
+}
+
+.divider {
+    color: #333;
+}
+
 /* Mobile */
 @media (max-width: 1024px) {
     .app-container {
@@ -102,10 +177,20 @@ body {
         grid-template-rows: auto;
         height: auto;
     }
+
     .bento-grid {
         grid-template-columns: 1fr;
     }
-    .tile.wide { grid-column: span 1; }
+
+    .main-nav {
+        display: none;
+        /* Hide top nav on mobile for MVP, use hamburger later */
+    }
+
+    .tile.wide {
+        grid-column: span 1;
+    }
+
     .ticker-panel {
         height: 300px;
         border-left: none;

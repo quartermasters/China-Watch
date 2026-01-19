@@ -30,16 +30,26 @@
     <div class="app-container">
         <!-- Header -->
         <header class="header">
-            <div class="logo">Red Pulse // <span style="color:white">China Watch</span></div>
+            <div class="logo">
+                <a href="/" style="text-decoration:none; color:inherit;">
+                    Red Pulse // <span style="color:white">China Watch</span>
+                </a>
+            </div>
+
+            <nav class="main-nav">
+                <a href="/" class="nav-link <?= $uri === '/' ? 'active' : '' ?>">Dashboard</a>
+                <a href="/methodology" class="nav-link">Methodology</a>
+                <a href="/about" class="nav-link">About</a>
+                <a href="/contact" class="nav-link">Contact</a>
+            </nav>
+
             <div class="status-indicator">
                 <span class="font-mono text-green">● SYSTEM OPTIMAL</span>
             </div>
         </header>
 
-        <!-- Sidebar (Nav) -->
-        <nav class="sidebar">
-            <!-- Nav items would go here -->
-        </nav>
+        <!-- Sidebar (Nav) - Hidden for now, moved to top -->
+        <!-- <nav class="sidebar"></nav> -->
 
         <!-- Main Content -->
         <?= $content ?>
@@ -75,6 +85,20 @@
             </form>
         </div>
     </div>
+
+    <!-- Footer -->
+    <footer class="app-footer">
+        <div class="footer-content">
+            <p>&copy; 2026-2036 <span class="font-bold">Quartermasters FZC</span>. All rights reserved.</p>
+            <div class="footer-links">
+                <a href="/privacy">Privacy Policy</a>
+                <span class="divider">|</span>
+                <a href="/terms">Terms of Service</a>
+                <span class="divider">|</span>
+                <a href="/contact">Contact</a>
+            </div>
+        </div>
+    </footer>
 
     <!-- Cookie Banner (Placeholder for Strategy) -->
     <div id="cookie-consent"></div>
