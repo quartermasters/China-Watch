@@ -102,6 +102,9 @@
 
     <!-- Cookie Banner (Placeholder for Strategy) -->
     <div id="cookie-consent"></div>
+
+    <!-- Modal Container -->
+    <div id="anomaly-modal-container"></div>
 </body>
 
 </html>
