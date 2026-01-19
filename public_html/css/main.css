@@ -1,0 +1,114 @@
+/* Red Pulse - Design System */
+:root {
+    /* Void Palette */
+    --bg-void: #050505;
+    --bg-surface: #111111;
+    --bg-glass: rgba(17, 17, 17, 0.7);
+    --border-subtle: rgba(255, 255, 255, 0.1);
+    
+    /* Signals */
+    --signal-red: #FF453A;
+    --signal-amber: #FFD60A;
+    --signal-green: #32D74B;
+    --signal-blue: #0A84FF;
+    
+    /* Typography */
+    --font-ui: 'Inter', system-ui, sans-serif;
+    --font-mono: 'JetBrains Mono', 'SF Mono', monospace;
+}
+
+body {
+    background-color: var(--bg-void);
+    color: #fff;
+    font-family: var(--font-ui);
+    margin: 0;
+    overflow-x: hidden;
+}
+
+/* Utilities */
+.font-mono { font-family: var(--font-mono); }
+.text-red { color: var(--signal-red); }
+.text-green { color: var(--signal-green); }
+.text-amber { color: var(--signal-amber); }
+
+/* Layout */
+.app-container {
+    max-width: 1600px;
+    margin: 0 auto;
+    padding: 1rem;
+    display: grid;
+    grid-template-columns: 250px 1fr 300px;
+    grid-template-rows: 60px auto;
+    gap: 1rem;
+    height: 100vh;
+}
+
+/* Glass Header */
+.header {
+    grid-column: 1 / -1;
+    background: var(--bg-glass);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border-subtle);
+    display: flex;
+    align-items: center;
+    padding: 0 1.5rem;
+    justify-content: space-between;
+}
+
+.logo {
+    font-family: var(--font-mono);
+    font-weight: 700;
+    letter-spacing: -1px;
+    text-transform: uppercase;
+    color: var(--signal-red);
+}
+
+/* Bento Grid */
+.bento-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1rem;
+    grid-column: 2 / 3;
+}
+
+.tile {
+    background: var(--bg-surface);
+    border: 1px solid var(--border-subtle);
+    border-radius: 12px;
+    padding: 1.5rem;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.tile:hover {
+    transform: scale(1.01);
+    border-color: rgba(255, 255, 255, 0.2);
+}
+
+.tile.wide { grid-column: span 2; }
+.tile.tall { grid-row: span 2; }
+
+/* Ticker (Sidebar) */
+.ticker-panel {
+    background: var(--bg-surface);
+    border-left: 1px solid var(--border-subtle);
+    padding: 1rem;
+    overflow-y: auto;
+}
+
+/* Mobile */
+@media (max-width: 1024px) {
+    .app-container {
+        grid-template-columns: 1fr;
+        grid-template-rows: auto;
+        height: auto;
+    }
+    .bento-grid {
+        grid-template-columns: 1fr;
+    }
+    .tile.wide { grid-column: span 1; }
+    .ticker-panel {
+        height: 300px;
+        border-left: none;
+        border-top: 1px solid var(--border-subtle);
+    }
+}

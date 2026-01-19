@@ -1,0 +1,19 @@
+{
+    "name": "redpulse/system",
+    "description": "Red Pulse Intelligence Platform",
+    "type": "project",
+    "require": {
+        "php": "^8.2",
+        "ext-pdo": "*",
+        "ext-curl": "*",
+        "guzzlehttp/guzzle": "^7.8"
+    },
+    "autoload": {
+        "psr-4": {
+            "RedPulse\\": "core/src/"
+        }
+    },
+    "config": {
+        "optimize-autoloader": true
+    }
+}
