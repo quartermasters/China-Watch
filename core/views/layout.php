@@ -69,7 +69,7 @@
         style="position:fixed; bottom:20px; right:20px; width:350px; background:var(--bg-surface); border:1px solid var(--signal-blue); border-radius:12px; overflow:hidden; z-index:100;">
         <div class="chat-header"
             style="background:var(--signal-blue); padding:10px; font-family:var(--font-mono); font-weight:bold; cursor:pointer;"
-            onclick="document.getElementById('chat-body').classList.toggle('hidden')">
+            onclick="const body = document.getElementById('chat-body'); body.style.display = (body.style.display === 'none') ? 'flex' : 'none';">
             // RED PULSE ANALYST
         </div>
         <div id="chat-body" class="hidden" style="height:300px; display:flex; flex-direction:column;">

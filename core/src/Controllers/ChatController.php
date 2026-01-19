@@ -66,7 +66,7 @@ class ChatController
 
         // D. Fallback (The "LLM" Simulation)
         $fallbacks = [
-            "I am Red Pulse, an automated economic intelligence analyst. I can answer questions about Lithium prices, Port traffic, or System anomalies.",
+            "I am the China Watch Analyst. I can answer questions about Lithium prices, Port traffic, or System anomalies.",
             "Accessing distributed ledger... Data not found for that specific query. Try asking about 'Lithium' or 'Ports'.",
             "Awaiting input. Please specify a sector (e.g., Energy, Logistics)."
         ];
