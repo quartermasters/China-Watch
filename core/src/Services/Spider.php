@@ -22,6 +22,78 @@ class Spider
         return $this->process_url($source['url'], $source['name']);
     }
 
+    /**
+     * Direct RSS feeds that don't require Google News decoding
+     */
+    private array $directFeeds = [
+        'globaltimes' => 'https://www.globaltimes.cn/rss/outbrain.xml',
+        'chinadaily' => 'http://www.chinadaily.com.cn/rss/china_rss.xml',
+        'cgtn' => 'https://www.cgtn.com/subscribe/rss/section/china.xml',
+    ];
+
+    public function crawl_direct_rss(string $feedKey = 'globaltimes'): array
+    {
+        $rssUrl = $this->directFeeds[$feedKey] ?? $this->directFeeds['globaltimes'];
+        echo "🕷️ Spider Target (Direct RSS): {$feedKey}...\n";
+
+        $xmlContent = $this->fetch($rssUrl);
+        if (!$xmlContent)
+            return ['status' => 'error', 'message' => 'RSS Fetch Failed'];
+
+        $xml = @simplexml_load_string($xmlContent);
+        if (!$xml)
+            return ['status' => 'error', 'message' => 'Invalid RSS XML'];
+
+        $count = 0;
+        $items = $xml->channel->item ?? [];
+
+        foreach ($items as $item) {
+            if ($count >= 1)
+                break;
+
+            $link = trim((string) ($item->link ?? ''));
+            $title = trim((string) ($item->title ?? ''));
+
+            if (empty($link) || empty($title))
+                continue;
+
+            $exists = DB::query("SELECT id FROM reports WHERE source_url = ?", [$link]);
+            if (!empty($exists))
+                continue;
+
+            echo "   Found: {$title}\n";
+
+            // Check for inline content (China Daily has full articles in RSS)
+            $content = trim((string) ($item->content ?? $item->description ?? ''));
+            $content = strip_tags(html_entity_decode($content, ENT_QUOTES, 'UTF-8'));
+            $content = preg_replace('/\s+/', ' ', $content);
+
+            if (strlen($content) >= 500) {
+                echo "      -> Using RSS content: " . strlen($content) . " chars\n";
+                $analyst = new \RedPulse\Services\AI\ReportGenerator();
+                $reportId = $analyst->generate_report(ucfirst($feedKey), $link, $title . "\n\n" . $content);
+
+                if ($reportId) {
+                    echo "   ✅ SUCCESS: Report generated (ID: {$reportId})\n";
+                    $count++;
+                    continue;
+                }
+            }
+
+            // Otherwise, scrape the article page
+            $result = $this->process_url($link, ucfirst($feedKey));
+
+            if ($result['status'] === 'success' && ($result['action'] ?? '') === 'report_generated') {
+                echo "   ✅ SUCCESS: Report generated (ID: {$result['report_id']})\n";
+                $count++;
+            } else {
+                echo "   ❌ SKIPPED: {$result['message']}\n";
+            }
+        }
+
+        return ['status' => 'success', 'crawled_count' => $count, 'feed' => $feedKey];
+    }
+
     public function crawl_topic(int $topicId): array
     {
         $topic = DB::query("SELECT * FROM topics WHERE id = ?", [$topicId])[0] ?? null;
@@ -48,6 +120,7 @@ class Spider
 
             $link = (string) $item->link;
             $title = (string) $item->title;
+            $description = (string) ($item->description ?? '');
 
             $exists = DB::query("SELECT id FROM reports WHERE source_url = ?", [$link]);
             if (!empty($exists))
@@ -69,6 +142,23 @@ class Spider
                 $count++;
             } else {
                 echo "   ❌ SKIPPED: {$result['message']}\n";
+
+                // FALLBACK: Use RSS description if scraping failed
+                $descText = strip_tags(html_entity_decode($description, ENT_QUOTES, 'UTF-8'));
+                $descText = preg_replace('/\s+/', ' ', trim($descText));
+
+                if (strlen($descText) >= 150) {
+                    echo "   -> Fallback: Using RSS description (" . strlen($descText) . " chars)\n";
+                    $contentText = $title . "\n\n" . $descText;
+
+                    $analyst = new \RedPulse\Services\AI\ReportGenerator();
+                    $reportId = $analyst->generate_report("Google News: {$topic['keyword']}", $realUrl, $contentText);
+
+                    if ($reportId) {
+                        echo "   ✅ SUCCESS (RSS Fallback): Report generated (ID: {$reportId})\n";
+                        $count++;
+                    }
+                }
             }
         }
 
@@ -79,15 +169,43 @@ class Spider
 
     private function resolve_google_news_link(string $url): string
     {
-        if (preg_match('/articles\/([a-zA-Z0-9\-_]+)/', $url, $matches)) {
-            $base64 = $matches[1];
-            $decoded = base64_decode($base64);
-            if ($decoded) {
-                if (preg_match('/(https?:\/\/[a-zA-Z0-9\-\._~:\/\?#\[\]@!$&\'\(\)\*\+,;=]+)/i', $decoded, $urlMatches)) {
-                    return $urlMatches[1];
+        if (!preg_match('/articles\/([a-zA-Z0-9\-_]+)/', $url, $matches)) {
+            return $url;
+        }
+
+        $articleId = $matches[1];
+
+        // Convert URL-safe base64 to standard base64
+        $base64 = str_replace(['-', '_'], ['+', '/'], $articleId);
+        // Add padding if needed
+        $padding = 4 - (strlen($base64) % 4);
+        if ($padding !== 4) {
+            $base64 .= str_repeat('=', $padding);
+        }
+
+        $decoded = base64_decode($base64, true);
+        if (!$decoded) {
+            return $url;
+        }
+
+        // Google uses protobuf - URL is usually after a marker byte followed by length
+        // Try multiple extraction patterns
+        $patterns = [
+            '/https?:\/\/(?:www\.)?[a-zA-Z0-9][-a-zA-Z0-9]*\.[a-zA-Z]{2,}[^\x00-\x1F\x7F\s"\'<>]*/i',
+        ];
+
+        foreach ($patterns as $pattern) {
+            if (preg_match_all($pattern, $decoded, $urlMatches)) {
+                foreach ($urlMatches[0] as $candidate) {
+                    // Skip Google domains
+                    if (strpos($candidate, 'google.') !== false) continue;
+                    if (strpos($candidate, 'gstatic.') !== false) continue;
+                    // Return first valid external URL
+                    return rtrim($candidate, '.,;:)}]');
                 }
             }
         }
+
         return $url;
     }
 
