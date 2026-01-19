@@ -56,7 +56,9 @@ $chartValues = array_column($signals, 'value');
                 </div>
             <?php else: ?>
                 <!-- Simple Chart using Chart.js CDN -->
-                <canvas id="mainChart"></canvas>
+                <div class="relative w-full" style="height: 300px;">
+                    <canvas id="mainChart"></canvas>
+                </div>
                 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
                 <script>
                     const ctx = document.getElementById('mainChart');
