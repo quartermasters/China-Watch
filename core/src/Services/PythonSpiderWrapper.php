@@ -15,9 +15,18 @@ class PythonSpiderWrapper
     public function __construct(string $platform)
     {
         $this->platform = $platform;
-        // Use the Virtual Environment Python to share libraries
-        // This is much safer than relying on the global system python
-        $this->pythonPath = __DIR__ . '/../../python/venv/bin/python3';
+
+        // 1. Try Virtual Environment (Best Practice)
+        $venvPath = __DIR__ . '/../../python/venv/bin/python3';
+
+        // 2. Fallback to System Python (If venv didn't create properly)
+        if (file_exists($venvPath)) {
+            $this->pythonPath = $venvPath;
+        } else {
+            // Log this warning if possible, or just proceed
+            $this->pythonPath = 'python3'; // Assumes python3 is in global PATH
+        }
+
         $this->scriptsDir = __DIR__ . '/../../python/scripts';
     }
 
