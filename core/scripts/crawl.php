@@ -14,8 +14,9 @@ echo "[SPIDER] Started at " . date('Y-m-d H:i:s') . "\n";
 $spider = new Spider();
 $result = ['status' => 'init'];
 
-// 50/50 Chance to crawl a specific Source OR a Topic discovery
-$mode = (rand(0, 1) === 0) ? 'source' : 'topic';
+// FORCE TOPIC MODE (Temporary Fix to verify GZIP Logic)
+// Reuters is blocking us, so let's focus on the Google News Topics which are working but just need GZIP.
+$mode = 'topic';
 
 if ($mode === 'source') {
     $sources = DB::query("SELECT id, name FROM sources WHERE active = 1 ORDER BY last_checked_at ASC LIMIT 1");
@@ -30,13 +31,7 @@ if ($mode === 'source') {
     if (!empty($topics)) {
         $result = $spider->crawl_topic($topics[0]['id']);
     } else {
-        // Fallback if no topics table yet, verify sources aren't empty before crawling
-        $fallbackSource = DB::query("SELECT id FROM sources LIMIT 1");
-        if (!empty($fallbackSource)) {
-            $result = $spider->crawl_source($fallbackSource[0]['id']);
-        } else {
-            $result = ['status' => 'skipped', 'message' => 'No topics or sources to crawl'];
-        }
+        $result = ['status' => 'skipped', 'message' => 'No topics found'];
     }
 }
 
