@@ -69,6 +69,13 @@ class Router
             return;
         }
 
+        // Dynamic Route: Entity Detail (Phase 8) - /entity/123
+        if (preg_match('#^/entity/(\d+)$#', $uri, $matches)) {
+            $controller = new \RedPulse\Controllers\EntitiesController();
+            $controller->show((int) $matches[1]);
+            return;
+        }
+
         // Static Route for Reports Archive
         if ($uri === '/reports') {
             $controller = new \RedPulse\Controllers\ReportController();

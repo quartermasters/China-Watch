@@ -23,6 +23,10 @@ $router->get('/methodology', [\RedPulse\Controllers\StaticController::class, 'me
 $router->get('/privacy', [\RedPulse\Controllers\StaticController::class, 'privacy']);
 $router->get('/terms', [\RedPulse\Controllers\StaticController::class, 'terms']);
 
+// Knowledge Graph (Entities)
+$router->get('/entities', [\RedPulse\Controllers\EntitiesController::class, 'index']);
+$router->get('/entity/{id}', [\RedPulse\Controllers\EntitiesController::class, 'show']);
+
 // HTMX Endpoints
 $router->get('/api/ticker', [DashboardController::class, 'ticker']);
 $router->post('/api/chat', [\RedPulse\Controllers\ChatController::class, 'ask']);

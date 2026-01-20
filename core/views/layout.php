@@ -39,6 +39,7 @@
             <nav class="main-nav">
                 <a href="/" class="nav-link <?= $uri === '/' ? 'active' : '' ?>">Dashboard</a>
                 <a href="/reports" class="nav-link <?= strpos($uri, '/reports') === 0 ? 'active' : '' ?>">Reports</a>
+                <a href="/entities" class="nav-link <?= strpos($uri, '/entit') === 0 ? 'active' : '' ?>">Entities</a>
                 <a href="/methodology" class="nav-link">Methodology</a>
                 <a href="/about" class="nav-link">About</a>
                 <a href="/contact" class="nav-link">Contact</a>
