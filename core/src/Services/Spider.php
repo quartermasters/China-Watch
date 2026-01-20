@@ -42,12 +42,16 @@ class Spider
     {
         $rssUrl = $this->directFeeds[$feedKey] ?? $this->directFeeds['globaltimes'];
         echo "🕷️ Spider Target (Direct RSS): {$feedKey}...\n";
+        echo "   [DEBUG] Fetching RSS URL: $rssUrl\n";
 
         $xmlContent = $this->fetch($rssUrl);
+
+        echo "   [DEBUG] Fetch complete. Size: " . strlen((string) $xmlContent) . " chars.\n";
+
         if (!$xmlContent)
             return ['status' => 'error', 'message' => 'RSS Fetch Failed'];
 
-        $xml = @simplexml_load_string($xmlContent);
+        $xml = @\simplexml_load_string($xmlContent);
         if (!$xml)
             return ['status' => 'error', 'message' => 'Invalid RSS XML'];
 
@@ -126,7 +130,7 @@ class Spider
         if (!$xmlContent)
             return ['status' => 'error', 'message' => 'RSS Fetch Failed'];
 
-        $xml = @simplexml_load_string($xmlContent);
+        $xml = @\simplexml_load_string($xmlContent);
         if (!$xml)
             return ['status' => 'error', 'message' => 'Invalid RSS XML'];
 
@@ -228,7 +232,7 @@ class Spider
         return $url;
     }
 
-    private function process_url(string $url, string $sourceName): array
+    public function process_url(string $url, string $sourceName): array
     {
         // 1. Fetch
         $response = $this->fetch_with_info($url);
