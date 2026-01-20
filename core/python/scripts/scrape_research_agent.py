@@ -3,12 +3,11 @@ import json
 import sys
 import time
 import warnings
-# Try importing, handling both old and new package structures if needed
+# Try importing from the new 'ddgs' package first
 try:
-    from duckduckgo_search import DDGS
+    from ddgs import DDGS
 except ImportError:
-    # If installed via 'pip install ddgs', it might still import slightly differently or just work.
-    # Usually it exposes the same class.
+    # Fallback to old package name
     from duckduckgo_search import DDGS
 
 warnings.filterwarnings("ignore")
