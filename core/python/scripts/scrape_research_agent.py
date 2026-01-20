@@ -1,6 +1,9 @@
 import argparse
 import json
 import sys
+import warnings
+# Suppress "package renamed" warnings to keep JSON output clean
+warnings.filterwarnings("ignore")
 from duckduckgo_search import DDGS
 
 def main():

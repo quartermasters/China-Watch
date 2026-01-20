@@ -16,16 +16,10 @@ class PythonSpiderWrapper
     {
         $this->platform = $platform;
 
-        // 1. Try Virtual Environment (Best Practice)
-        $venvPath = __DIR__ . '/../../python/venv/bin/python3';
-
-        // 2. Fallback to System Python (If venv didn't create properly)
-        if (file_exists($venvPath)) {
-            $this->pythonPath = $venvPath;
-        } else {
-            // Log this warning if possible, or just proceed
-            $this->pythonPath = 'python3'; // Assumes python3 is in global PATH
-        }
+        // VENV Creation failed on this server (missing python3-venv).
+        // Dependencies (praw) were installed globally.
+        // Force System Python.
+        $this->pythonPath = 'python3';
 
         $this->scriptsDir = __DIR__ . '/../../python/scripts';
     }
@@ -69,7 +63,13 @@ class PythonSpiderWrapper
         $jsonOutput = implode("\n", $output);
         $data = json_decode($jsonOutput, true);
 
-        if ($returnVar !== 0 || json_last_error() !== JSON_ERROR_NONE) {
+        // Robustness: If full decode fails (due to warnings/logs), try the LAST line only.
+        if (json_last_error() !== JSON_ERROR_NONE && !empty($output)) {
+            $lastLine = end($output);
+            $data = json_decode($lastLine, true);
+        }
+
+        if ($returnVar !== 0 || empty($data)) {
             return [
                 'status' => 'error',
                 'message' => "Python Error (Exit Code $returnVar): " . $jsonOutput
