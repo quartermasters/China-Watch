@@ -14,8 +14,8 @@ $agent = SpiderFactory::create('research_agent');
 $query = "China Economy Outlook 2025";
 echo "🔎 Searching for: '$query'...\n";
 
-// The Wrapper passes the query as the 'url' argument
-$result = $agent->process_url($query, "Manual Test");
+// The Wrapper passes the query as the 'url' argument, plus options
+$result = $agent->process_url($query, "Manual Test", ['max_results' => 50]);
 
 // 3. Output results
 echo "\n--- RAW JSON RESULT ---\n";

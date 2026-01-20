@@ -37,7 +37,7 @@ class PythonSpiderWrapper
         return $this->process_url("TEST_MODE", "Testing {$this->platform}");
     }
 
-    public function process_url(string $url, string $sourceName): array
+    public function process_url(string $url, string $sourceName, array $options = []): array
     {
         $script = $this->scriptsDir . "/scrape_{$this->platform}.py";
 
@@ -46,12 +46,19 @@ class PythonSpiderWrapper
             $script = __DIR__ . '/../../python/bridge_test.py';
         }
 
+        $extraArgs = '';
+        foreach ($options as $key => $value) {
+            // Convert ['max_results' => 50] to "--max_results 50"
+            $extraArgs .= sprintf(' --%s %s', $key, escapeshellarg((string) $value));
+        }
+
         $cmd = sprintf(
-            '%s %s --url %s --source %s 2>&1',
+            '%s %s --url %s --source %s%s 2>&1',
             escapeshellarg($this->pythonPath),
             escapeshellarg($script),
             escapeshellarg($url),
-            escapeshellarg($sourceName)
+            escapeshellarg($sourceName),
+            $extraArgs
         );
 
         echo "🐍 Dispatching to Python ({$this->platform}): $cmd\n";
