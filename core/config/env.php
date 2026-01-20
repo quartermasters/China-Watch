@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 // Database Credentials (Hostinger)
 // UPDATE THESE WITH YOUR ACTUAL HOSTINGER DATABASE DETAILS
-define('DB_HOST', 'localhost');
+define('DB_HOST', '127.0.0.1');
 define('DB_NAME', 'u123456789_redpulse'); // Example Hostinger DB Name
 define('DB_USER', 'u123456789_admin');    // Example Hostinger User
 define('DB_PASS', 'YourStrongPassword123!');
