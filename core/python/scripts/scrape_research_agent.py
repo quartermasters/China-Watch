@@ -3,7 +3,13 @@ import json
 import sys
 import time
 import warnings
-from duckduckgo_search import DDGS
+# Try importing, handling both old and new package structures if needed
+try:
+    from duckduckgo_search import DDGS
+except ImportError:
+    # If installed via 'pip install ddgs', it might still import slightly differently or just work.
+    # Usually it exposes the same class.
+    from duckduckgo_search import DDGS
 
 warnings.filterwarnings("ignore")
 
@@ -23,39 +29,42 @@ def main():
         sys.exit(1)
 
     results = []
-    last_error = "None"
+    messages = []
     
-    # Simple Retry Logic (Proven to work)
-    for attempt in range(3):
+    # Try different backends explicitly
+    # 'html' is often best for scraping volume. 'api' is cleaner but stricter limits.
+    backends = ['html', 'lite', 'api']
+    
+    for backend in backends:
+        if len(results) > 0:
+            break
+            
         try:
             with DDGS() as ddgs:
-                # Removed 'backend' arg as it caused regression.
-                # 'wt-wt' is global. 'max_results' set to requested amount.
-                search_gen = ddgs.text(query, region='wt-wt', safesearch='off', max_results=args.max_results)
-                
-                if search_gen:
-                    for r in search_gen:
+                # Retrieve slightly more to filter
+                gen = ddgs.text(query, region='wt-wt', safesearch='off', backend=backend, max_results=args.max_results)
+                if gen:
+                    for r in gen:
                         results.append({
                             "title": r.get('title'),
                             "href": r.get('href'),
                             "body": r.get('body')
                         })
+                    messages.append(f"Backend '{backend}' success: {len(results)} items")
+                else:
+                    messages.append(f"Backend '{backend}' returned empty generator")
                     
-                    # If we got results, break the retry loop
-                    if len(results) > 0:
-                        break
         except Exception as e:
-            last_error = str(e)
-            time.sleep(2)
+            messages.append(f"Backend '{backend}' error: {str(e)}")
+            time.sleep(1)
 
     output = {
-        "status": "success", # Always return success so PHP can see the count
-        "platform": "research_agent_v3",
+        "status": "success",
+        "platform": "research_agent_debug",
         "query": query,
         "results": results,
         "count": len(results),
-        "debug_error": last_error if len(results) == 0 else "None",
-        "debug_metadata": {"attempts_made": attempt + 1}
+        "debug_log": messages
     }
     
     print(json.dumps(output))
