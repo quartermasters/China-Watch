@@ -22,61 +22,44 @@ def main():
         print(json.dumps({"status": "error", "message": "No query provided"}))
         sys.exit(1)
 
-    unique_results = {}
-    backends = ['api', 'html', 'lite'] # 'api' is standard, 'html' is legacy, 'lite' is no-js
+    results = []
+    last_error = "None"
     
-    try:
-        with DDGS() as ddgs:
-            for backend in backends:
-                if len(unique_results) >= args.max_results:
-                    break
-
-                try:
-                    # Fetch slightly more than needed to account for dupes
-                    remaining = args.max_results - len(unique_results)
-                    # backend param might be deprecated in some versions, but region is key
-                    # We iterate backends manually if the library supports it, 
-                    # otherwise simply retrying with different regions/params helps.
-                    # As of recent ddgs, 'backend' param is valid for text()
-                    
-                    results = ddgs.text(query, region='wt-wt', safesearch='off', backend=backend, max_results=remaining + 5)
-                    
-                    if results:
-                        for r in results:
-                            if len(unique_results) >= args.max_results:
-                                break
-                            
-                            href = r.get('href')
-                            if href and href not in unique_results:
-                                unique_results[href] = {
-                                    "title": r.get('title'),
-                                    "href": href,
-                                    "body": r.get('body')
-                                }
-                except Exception as e:
-                    # Silently fail on one backend and try the next
-                    continue
+    # Simple Retry Logic (Proven to work)
+    for attempt in range(3):
+        try:
+            with DDGS() as ddgs:
+                # Removed 'backend' arg as it caused regression.
+                # 'wt-wt' is global. 'max_results' set to requested amount.
+                search_gen = ddgs.text(query, region='wt-wt', safesearch='off', max_results=args.max_results)
                 
-                # Small delay between backend switches
-                time.sleep(1)
+                if search_gen:
+                    for r in search_gen:
+                        results.append({
+                            "title": r.get('title'),
+                            "href": r.get('href'),
+                            "body": r.get('body')
+                        })
+                    
+                    # If we got results, break the retry loop
+                    if len(results) > 0:
+                        break
+        except Exception as e:
+            last_error = str(e)
+            time.sleep(2)
 
-        final_results = list(unique_results.values())
-
-        output = {
-            "status": "success",
-            "platform": "research_agent_v2",
-            "query": query,
-            "results": final_results,
-            "count": len(final_results),
-            "debug_metadata": {"method": "backend_rotation", "backends_used": len(backends)}
-        }
-        
-        print(json.dumps(output))
-        sys.exit(0)
-
-    except Exception as e:
-        print(json.dumps({"status": "error", "message": str(e)}))
-        sys.exit(1)
+    output = {
+        "status": "success", # Always return success so PHP can see the count
+        "platform": "research_agent_v3",
+        "query": query,
+        "results": results,
+        "count": len(results),
+        "debug_error": last_error if len(results) == 0 else "None",
+        "debug_metadata": {"attempts_made": attempt + 1}
+    }
+    
+    print(json.dumps(output))
+    sys.exit(0)
 
 if __name__ == "__main__":
     main()
