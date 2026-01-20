@@ -31,6 +31,11 @@ class Spider
         'chinastartup' => 'http://www.chinadaily.com.cn/rss/bizchina_rss.xml', // Tech/Biz
         'cgtn' => 'https://www.cgtn.com/subscribe/rss/section/china.xml',
         'technode' => 'https://technode.com/feed/',
+        // REDDIT RSS (No API Key Required)
+        'reddit_china' => 'https://www.reddit.com/r/China/.rss',
+        'reddit_economics' => 'https://www.reddit.com/r/Economics/.rss',
+        'reddit_geopolitics' => 'https://www.reddit.com/r/Geopolitics/.rss',
+
     ];
 
     public function crawl_direct_rss(string $feedKey = 'globaltimes'): array
