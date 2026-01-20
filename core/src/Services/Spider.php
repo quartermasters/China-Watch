@@ -377,17 +377,18 @@ class Spider
         curl_setopt($ch, CURLOPT_URL, $url);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
-        curl_setopt($ch, CURLOPT_MAXREDIRS, 7);
-        curl_setopt($ch, CURLOPT_TIMEOUT, 45);
+        curl_setopt($ch, CURLOPT_MAXREDIRS, 5);
+        curl_setopt($ch, CURLOPT_TIMEOUT, 15); // Reduced from 45
 
         curl_setopt($ch, CURLOPT_ENCODING, '');
         curl_setopt($ch, CURLOPT_IPRESOLVE, CURL_IPRESOLVE_V4);
 
+        $userAgent = $agents[array_rand($agents)];
         $headers = [
             'Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8',
             'Accept-Language: en-US,en;q=0.9',
             'Upgrade-Insecure-Requests: 1',
-            'User-Agent: ' . $agents[array_rand($agents)]
+            'User-Agent: ' . $userAgent
         ];
         curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
 
@@ -398,24 +399,34 @@ class Spider
         curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
         curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false);
 
+        echo "   [DEBUG] Executing cURL (Timeout 15s)... ";
+        $startTime = microtime(true);
         $output = curl_exec($ch);
+        $elapsed = round(microtime(true) - $startTime, 2);
         $info = curl_getinfo($ch);
+        echo "Done in {$elapsed}s. Code: {$info['http_code']}\n";
+
         curl_close($ch);
 
         $content = null;
         if ($info['http_code'] >= 200 && $info['http_code'] < 400 && $output) {
             $content = $output;
-        } else if ($info['http_code'] == 403 || empty($output)) {
+        } else if ($info['http_code'] == 403 || empty($output) || $info['http_code'] == 0) {
+            echo "   [DEBUG] cURL failed or timed out. Trying stream fallback (Timeout 10s)...\n";
             $context = stream_context_create([
                 'http' => [
-                    'header' => "User-Agent: " . $agents[0] . "\r\n",
+                    'header' => "User-Agent: " . $userAgent . "\r\n",
                     'follow_location' => 1,
-                    'timeout' => 30
+                    'timeout' => 10 // Reduced from 30
                 ]
             ]);
             $fallback = @file_get_contents($url, false, $context);
-            if ($fallback)
+            if ($fallback) {
+                echo "   [DEBUG] Stream fallback success!\n";
                 $content = $fallback;
+            } else {
+                echo "   [DEBUG] Stream fallback failed.\n";
+            }
         }
 
         return [
