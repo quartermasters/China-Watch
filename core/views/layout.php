@@ -28,7 +28,15 @@
 </head>
 
 <body>
-    <div class="app-container">
+    <?php
+    // Detect Reading Mode (Single Report or Entity Detail)
+    // We want full width for: /reports/slug (but NOT /reports index) AND /entity/id (but NOT /entities index)
+    $is_report_detail = (strpos($uri, '/reports/') === 0 && $uri !== '/reports');
+    $is_entity_detail = (strpos($uri, '/entity/') === 0);
+
+    $reading_mode_class = ($is_report_detail || $is_entity_detail) ? 'layout-reading' : '';
+    ?>
+    <div class="app-container <?= $reading_mode_class ?>">
         <!-- Header -->
         <header class="header">
             <div class="logo">
@@ -76,7 +84,8 @@
         <!-- Main Content -->
         <?= $content ?>
 
-        <!-- Ticker -->
+        <!-- Ticker (Hide in Reading Mode) -->
+        <?php if (!$is_report_detail && !$is_entity_detail): ?>
         <aside class="ticker-panel">
             <h3 class="font-mono" style="margin-top:0; color:var(--text-secondary)">// LIVE ANOMALIES</h3>
             <ul id="ticker-feed" class="ticker-list" hx-get="/api/ticker" hx-trigger="load, every 30s">
@@ -84,6 +93,7 @@
                 <li class="font-mono text-amber">Loading stream...</li>
             </ul>
         </aside>
+        <?php endif; ?>
     </div>
 
     <!-- AI Analyst Widget -->

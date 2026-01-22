@@ -81,6 +81,14 @@ body {
     height: 100vh;
 }
 
+/* Reading Mode (Reports) - 2 Columns */
+.app-container.layout-reading {
+    grid-template-columns: 240px 1fr;
+    /* Remove Ticker Column */
+    max-width: 1400px;
+    /* Constrain width slightly for readability */
+}
+
 /* Glass Header */
 .header {
     grid-column: 1 / -1;
