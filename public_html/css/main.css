@@ -270,18 +270,46 @@ body {
 /* Mobile */
 @media (max-width: 1024px) {
     .app-container {
-        grid-template-columns: 1fr;
-        grid-template-rows: auto;
+        display: flex;
+        /* Switch to flex on mobile for simpler stacking */
+        flex-direction: column;
+        padding: 0;
+        gap: 0;
         height: auto;
     }
 
-    .bento-grid {
-        grid-template-columns: 1fr;
+    .header {
+        position: sticky;
+        top: 0;
+        padding: 0 1rem;
+        height: 60px;
     }
 
     .main-nav {
         display: none;
-        /* Hide top nav on mobile for MVP, use hamburger later */
+        /* Hidden by default, toggled via JS */
+        position: absolute;
+        top: 60px;
+        left: 0;
+        right: 0;
+        background: var(--bg-void);
+        /* Solid back for legibility */
+        border-bottom: 1px solid var(--border-subtle);
+        flex-direction: column;
+        padding: 1rem;
+        gap: 1rem;
+        backdrop-filter: none;
+    }
+
+    .main-nav.open {
+        display: flex;
+    }
+
+    .bento-grid {
+        grid-column: 1 / -1;
+        grid-template-columns: 1fr;
+        /* Single column stack */
+        padding: 1rem;
     }
 
     .tile.wide {
@@ -289,8 +317,12 @@ body {
     }
 
     .ticker-panel {
-        height: 300px;
+        grid-column: 1 / -1;
+        /* Full width on mobile */
+        height: auto;
+        max-height: 300px;
         border-left: none;
         border-top: 1px solid var(--border-subtle);
+        margin-top: 1rem;
     }
 }

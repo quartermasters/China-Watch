@@ -29,8 +29,14 @@
 
 <body>
     <?php
+    // FIX: Define $uri globally for layout logic
+    $uri = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
+    if ($uri !== '/' && substr($uri, -1) === '/')
+        $uri = substr($uri, 0, -1); // Normalize trailing slash
+    
     // Detect Reading Mode (Single Report or Entity Detail)
     // We want full width for: /reports/slug (but NOT /reports index) AND /entity/id (but NOT /entities index)
+    // We treat /reports as index, but /reports/foo as detail.
     $is_report_detail = (strpos($uri, '/reports/') === 0 && $uri !== '/reports');
     $is_entity_detail = (strpos($uri, '/entity/') === 0);
 
@@ -86,13 +92,13 @@
 
         <!-- Ticker (Hide in Reading Mode) -->
         <?php if (!$is_report_detail && !$is_entity_detail): ?>
-        <aside class="ticker-panel">
-            <h3 class="font-mono" style="margin-top:0; color:var(--text-secondary)">// LIVE ANOMALIES</h3>
-            <ul id="ticker-feed" class="ticker-list" hx-get="/api/ticker" hx-trigger="load, every 30s">
-                <!-- HTMX will load list items here -->
-                <li class="font-mono text-amber">Loading stream...</li>
-            </ul>
-        </aside>
+            <aside class="ticker-panel">
+                <h3 class="font-mono" style="margin-top:0; color:var(--text-secondary)">// LIVE ANOMALIES</h3>
+                <ul id="ticker-feed" class="ticker-list" hx-get="/api/ticker" hx-trigger="load, every 30s">
+                    <!-- HTMX will load list items here -->
+                    <li class="font-mono text-amber">Loading stream...</li>
+                </ul>
+            </aside>
         <?php endif; ?>
     </div>
 
