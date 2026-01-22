@@ -1,28 +1,42 @@
-/* Red Pulse - Design System */
+/* Red Pulse - Design System (Premium) */
 :root {
-    /* Void Palette */
-    --bg-void: #050505;
-    --bg-surface: #111111;
-    --bg-glass: rgba(17, 17, 17, 0.7);
-    --border-subtle: rgba(255, 255, 255, 0.1);
+    /* Cinematic Void Palette */
+    --bg-void: #030304;
+    /* Deeper black */
+    --bg-surface: rgba(20, 20, 25, 0.4);
+    /* Glass base */
+    --bg-glass: rgba(10, 10, 12, 0.85);
 
-    /* Signals */
+    --border-subtle: rgba(255, 255, 255, 0.08);
+    --border-glow: rgba(50, 200, 255, 0.3);
+
+    /* Premium Signals */
     --signal-red: #FF453A;
     --signal-amber: #FFD60A;
-    --signal-green: #32D74B;
+    --signal-green: #30D158;
     --signal-blue: #0A84FF;
 
+    /* Text */
+    --text-primary: #FFFFFF;
+    --text-secondary: rgba(255, 255, 255, 0.6);
+    --text-muted: rgba(255, 255, 255, 0.4);
+
     /* Typography */
-    --font-ui: 'Inter', system-ui, sans-serif;
+    --font-ui: 'Inter', system-ui, -apple-system, sans-serif;
     --font-mono: 'JetBrains Mono', 'SF Mono', monospace;
 }
 
 body {
     background-color: var(--bg-void);
-    color: #fff;
+    background-image:
+        radial-gradient(circle at 15% 50%, rgba(10, 132, 255, 0.08), transparent 25%),
+        radial-gradient(circle at 85% 30%, rgba(255, 69, 58, 0.05), transparent 25%);
+    background-attachment: fixed;
+    color: var(--text-primary);
     font-family: var(--font-ui);
     margin: 0;
     overflow-x: hidden;
+    line-height: 1.5;
 }
 
 /* Utilities */
@@ -46,15 +60,24 @@ body {
     color: var(--signal-amber);
 }
 
+.text-blue {
+    color: var(--signal-blue);
+}
+
+.text-secondary {
+    color: var(--text-secondary);
+}
+
 /* Layout */
 .app-container {
     max-width: 1600px;
     margin: 0 auto;
-    padding: 1rem;
+    padding: 1.5rem;
     display: grid;
-    grid-template-columns: 1fr 350px;
+    grid-template-columns: 240px 1fr 320px;
+    /* Sidebar | content | Ticker */
     grid-template-rows: 70px auto;
-    gap: 1rem;
+    gap: 1.5rem;
     height: 100vh;
 }
 
@@ -62,42 +85,100 @@ body {
 .header {
     grid-column: 1 / -1;
     background: var(--bg-glass);
-    backdrop-filter: blur(12px);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
     border-bottom: 1px solid var(--border-subtle);
     display: flex;
     align-items: center;
-    padding: 0 1.5rem;
+    padding: 0 2rem;
     justify-content: space-between;
+    z-index: 50;
+    border-radius: 12px;
+    /* Floating header look if we want, but keeping full width for now */
+    border-radius: 0;
 }
 
 .logo {
     font-family: var(--font-mono);
     font-weight: 700;
-    letter-spacing: -1px;
+    letter-spacing: -0.5px;
     text-transform: uppercase;
-    color: var(--signal-red);
+    color: #fff;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+/* Sidebar Navigation (Moved from Top) */
+.main-nav {
+    display: flex;
+    gap: 2rem;
+}
+
+.nav-link {
+    color: var(--text-secondary);
+    text-decoration: none;
+    font-size: 0.9rem;
+    font-weight: 500;
+    padding: 0.5rem 0;
+    border-bottom: 2px solid transparent;
+    transition: all 0.3s ease;
+}
+
+.nav-link:hover,
+.nav-link.active {
+    color: #fff;
+    border-bottom-color: var(--signal-blue);
 }
 
 /* Bento Grid */
 .bento-grid {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
-    gap: 1rem;
-    grid-column: 1 / 2;
-    /* Main Content Area */
+    grid-template-rows: auto auto;
+    /* Allow flexible rows */
+    gap: 1.5rem;
+    grid-column: 2 / 3;
+    /* Center Column */
 }
 
+/* Premium Tile */
 .tile {
     background: var(--bg-surface);
     border: 1px solid var(--border-subtle);
-    border-radius: 12px;
+    border-radius: 16px;
     padding: 1.5rem;
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 0 4px 24px rgba(0, 0, 0, 0.2);
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
 }
 
 .tile:hover {
-    transform: scale(1.01);
+    transform: translateY(-4px);
     border-color: rgba(255, 255, 255, 0.2);
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.4);
+}
+
+/* Tile Glow Effect */
+.tile::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.tile:hover::after {
+    opacity: 1;
 }
 
 .tile.wide {
@@ -108,12 +189,15 @@ body {
     grid-row: span 2;
 }
 
-/* Ticker (Sidebar) */
+/* Ticker Sidebar */
 .ticker-panel {
     background: var(--bg-surface);
     border-left: 1px solid var(--border-subtle);
-    padding: 1rem;
+    border-radius: 16px;
+    padding: 1.5rem;
     overflow-y: auto;
+    backdrop-filter: blur(12px);
+    grid-column: 3 / 4;
 }
 
 /* Navigation */

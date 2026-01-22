@@ -18,7 +18,8 @@
     <!-- CSS -->
     <link rel="stylesheet" href="/css/main.css">
 
-    <!-- HTMX -->
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://unpkg.com/htmx.org@1.9.10"></script>
 
     <!-- Google AdSense (Placeholder) -->
@@ -31,16 +32,35 @@
         <!-- Header -->
         <header class="header">
             <div class="logo">
-                <a href="/" style="text-decoration:none; color:inherit;">
-                    China Watch // <span style="color:white">Intelligence</span>
+                <a href="/" style="text-decoration:none; color:inherit; display:flex; align-items:center; gap:8px;">
+                    <div
+                        style="width:12px; height:12px; background:var(--signal-red); border-radius:50%; box-shadow: 0 0 10px var(--signal-red);">
+                    </div>
+                    China Watch <span style="opacity:0.5; font-weight:400; font-family:var(--font-ui);">// INTEL</span>
                 </a>
             </div>
 
+            <!-- Mobile Menu Button -->
+            <button id="menu-toggle" class="font-mono text-secondary"
+                style="background:none; border:none; font-size:1.5rem; cursor:pointer; display:none;">
+                ☰
+            </button>
+            <script>
+                // Simple Mobile Menu Logic
+                document.getElementById('menu-toggle').addEventListener('click', () => {
+                    document.querySelector('.main-nav').classList.toggle('open');
+                });
+                // Show button only on mobile via JS check or CSS media query
+                if (window.innerWidth <= 1024) {
+                    document.getElementById('menu-toggle').style.display = 'block';
+                }
+            </script>
+
             <nav class="main-nav">
-                <a href="/" class="nav-link <?= $uri === '/' ? 'active' : '' ?>">Dashboard</a>
-                <a href="/reports" class="nav-link <?= strpos($uri, '/reports') === 0 ? 'active' : '' ?>">Reports</a>
-                <a href="/entities" class="nav-link <?= strpos($uri, '/entit') === 0 ? 'active' : '' ?>">Entities</a>
-                <a href="/methodology" class="nav-link">Methodology</a>
+                <a href="/" class="nav-link <?= $uri === '/' ? 'active' : '' ?>">DASHBOARD</a>
+                <a href="/reports" class="nav-link <?= strpos($uri, '/reports') === 0 ? 'active' : '' ?>">REPORTS</a>
+                <a href="/entities" class="nav-link <?= strpos($uri, '/entit') === 0 ? 'active' : '' ?>">ENTITIES</a>
+                <a href="/methodology" class="nav-link">METHODOLOGY</a>
                 <a href="/about" class="nav-link">About</a>
                 <a href="/contact" class="nav-link">Contact</a>
             </nav>
