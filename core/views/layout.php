@@ -15,9 +15,8 @@
         href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&family=JetBrains+Mono:wght@400;700&display=swap"
         rel="stylesheet">
 
-    <!-- CSS -->
     <!-- CSS (Versioned to force refresh) -->
-    <link rel="stylesheet" href="/css/main.css?v=1.2">
+    <link rel="stylesheet" href="/css/main.css?v=1.3">
 
     <!-- Chart.js -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -35,13 +34,16 @@
     if ($uri !== '/' && substr($uri, -1) === '/')
         $uri = substr($uri, 0, -1); // Normalize trailing slash
     
+    // We want full width for: /reports/slug, /entity/id, AND Static Pages (About, Contact, Methodology)
+    $static_pages = ['/about', '/contact', '/methodology', '/privacy', '/terms'];
+    $is_static_page = in_array($uri, $static_pages);
+
     // Detect Reading Mode (Single Report or Entity Detail)
-    // We want full width for: /reports/slug (but NOT /reports index) AND /entity/id (but NOT /entities index)
-    // We treat /reports as index, but /reports/foo as detail.
     $is_report_detail = (strpos($uri, '/reports/') === 0 && $uri !== '/reports');
     $is_entity_detail = (strpos($uri, '/entity/') === 0);
 
-    $reading_mode_class = ($is_report_detail || $is_entity_detail) ? 'layout-reading' : '';
+    // Apply Reading Mode class if any of the above are true
+    $reading_mode_class = ($is_report_detail || $is_entity_detail || $is_static_page) ? 'layout-reading' : '';
     ?>
     <div class="app-container <?= $reading_mode_class ?>">
         <!-- Header -->
