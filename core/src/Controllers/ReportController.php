@@ -15,7 +15,9 @@ class ReportController
 
         View::render('reports/index', [
             'reports' => $reports,
-            'page_title' => 'China Watch | Intelligence Archive'
+            'page_title' => 'Intelligence Archive // China Watch',
+            'meta_description' => 'Access the full archive of AI-generated intelligence reports on China\'s economy, industrial sectors, and geopolitical maneuvers.',
+            'canonical_url' => 'https://chinawatch.blog/reports'
         ]);
     }
 
@@ -32,13 +34,29 @@ class ReportController
         }
 
         $report = $data[0];
+        $tags = json_decode($report['tags'] ?? '[]', true);
 
         // Increment Views (Fire and forget, no need to wait)
         DB::query("UPDATE reports SET views = views + 1 WHERE id = ?", [$report['id']]);
 
+        // Construct SEO Data
+        $meta_description = mb_substr(strip_tags($report['summary'] ?? $report['content']), 0, 160) . '...';
+
         View::render('reports/show', [
             'report' => $report,
-            'page_title' => $report['title'] . ' | China Watch Intelligence'
+            'page_title' => $report['title'] . ' // China Watch Intel',
+
+            // Critical SEO Data
+            'meta_description' => $meta_description,
+            'canonical_url' => 'https://chinawatch.blog/reports/' . $report['slug'],
+
+            // Open Graph / Social
+            'og_type' => 'article',
+            'og_image' => 'https://chinawatch.blog/public/assets/og-default.jpg', // Logic to be improved later with featured images
+
+            // Article Schema Data
+            'article_published_time' => $report['published_at'],
+            'article_tags' => $tags
         ]);
     }
 }
