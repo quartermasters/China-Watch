@@ -75,7 +75,8 @@
 
             <!-- Mobile Menu Button -->
             <button id="menu-toggle" class="font-mono text-secondary"
-                style="background:none; border:none; font-size:1.5rem; cursor:pointer; display:none;">
+                style="background:none; border:none; font-size:1.5rem; cursor:pointer; display:none;"
+                aria-label="Toggle Navigation Menu">
                 ☰
             </button>
             <script>
