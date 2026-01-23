@@ -42,6 +42,22 @@ class ReportController
         // Construct SEO Data
         $meta_description = mb_substr(strip_tags($report['summary'] ?? $report['content']), 0, 160) . '...';
 
+        // Fetch Related Reports (Simple Tag Matching)
+        $related_reports = [];
+        if (!empty($tags)) {
+            // Create a LIKE query for the first tag found (simplest robust way without full-text search)
+            // Ideally we'd loop through all, but for MVP one tag match is sufficient signal
+            $primary_tag = $tags[0];
+            $related_reports = DB::query("
+                SELECT title, slug, published_at 
+                FROM reports 
+                WHERE tags LIKE ? 
+                AND id != ? 
+                ORDER BY published_at DESC 
+                LIMIT 3
+            ", ['%' . $primary_tag . '%', $report['id']]);
+        }
+
         View::render('reports/show', [
             'report' => $report,
             'page_title' => $report['title'] . ' // China Watch Intel',

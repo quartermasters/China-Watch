@@ -75,6 +75,25 @@
                 <?php endforeach; ?>
             </div>
         </footer>
+
+        <?php if (!empty($related_reports)): ?>
+            <div class="mt-16 pt-8 border-t border-[var(--border-subtle)]">
+                <h3 class="font-mono text-[var(--signal-amber)] text-sm mb-6">// RELATED INTELLIGENCE</h3>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <?php foreach ($related_reports as $related): ?>
+                        <a href="/reports/<?= $related['slug'] ?>"
+                            class="group block p-4 rounded-lg bg-[var(--bg-surface)] hover:bg-[var(--bg-glass)] transition-all border border-transparent hover:border-[var(--border-subtle)]">
+                            <span
+                                class="text-xs font-mono text-[var(--text-muted)] mb-2 block"><?= date('M d, Y', strtotime($related['published_at'])) ?></span>
+                            <h4
+                                class="text-white group-hover:text-[var(--signal-blue)] font-bold leading-tight transition-colors">
+                                <?= $related['title'] ?>
+                            </h4>
+                        </a>
+                    <?php endforeach; ?>
+                </div>
+            </div>
+        <?php endif; ?>
     </article>
 
 </div>
