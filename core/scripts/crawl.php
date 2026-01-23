@@ -11,24 +11,60 @@ ini_set('error_log', $logFile);
 
 require_once __DIR__ . '/../src/bootstrap.php';
 
+use RedPulse\Services\Spider;
+use RedPulse\Services\SmartSpider;
+use RedPulse\Core\DB;
+
 echo "[SPIDER] Started at " . date('Y-m-d H:i:s') . "\n";
 
 // Initialize Spider
 $spider = new Spider();
 $result = ['status' => 'init'];
 
-// Priority: Direct RSS (80%) > Topic/Google News (10%) > Source (10%)
-// Direct RSS is most reliable - no Google URL decoding or JS-walls
+// Priority: Direct RSS (75%) > SmartSpider (5%) > Topic/Google News (10%) > Source (10%)
+// SmartSpider uses SerpAPI quota - use sparingly
 $roll = rand(1, 100);
 
-if ($roll <= 80) {
-    // Direct RSS feeds - most reliable, no blocking issues
-    $feeds = ['globaltimes', 'chinadaily', 'cgtn'];
+if ($roll <= 75) {
+    // Direct RSS feeds - verified working Jan 2026
+    $feeds = ['technode', 'scmp', 'gnews_china', 'diplomat', 'aljazeera', 'cna_asia'];
     $feedKey = $feeds[array_rand($feeds)];
+    echo "[SPIDER] Selected feed: {$feedKey}\n";
     $result = $spider->crawl_direct_rss($feedKey);
-    $result = $spider->crawl_direct_rss($feedKey);
+} elseif ($roll <= 80) {
+    // SMART SPIDER MODE (5% Chance) - Uses SerpAPI
+    echo "[SPIDER] SmartSpider mode activated!\n";
+
+    $smartTopics = [
+        'China economy trade',
+        'China technology semiconductor',
+        'China military Taiwan',
+        'China US relations',
+        'Xi Jinping policy',
+        'China Belt Road',
+        'China South China Sea'
+    ];
+
+    $topic = $smartTopics[array_rand($smartTopics)];
+
+    try {
+        $smartSpider = new SmartSpider();
+        $stats = $smartSpider->getUsageStats();
+
+        // Only proceed if we have quota
+        if ($stats['daily_used'] < $stats['daily_limit']) {
+            echo "[SMART] Hunting topic: $topic\n";
+            $result = $smartSpider->huntNews($topic, 3);
+        } else {
+            echo "[SMART] Daily quota exhausted, falling back to RSS\n";
+            $result = $spider->crawl_direct_rss('technode');
+        }
+    } catch (\Throwable $e) {
+        echo "[SMART] Error: " . $e->getMessage() . "\n";
+        $result = $spider->crawl_direct_rss('technode');
+    }
 } elseif ($roll <= 90) {
-    // HUNTER MODE (20% Chance - Adjusted)
+    // HUNTER MODE (10% Chance)
     // Uses the Research Agent (Python) to find fresh URLs for a topic
     $topics = DB::query("SELECT id, keyword, search_query FROM topics ORDER BY last_crawled_at ASC LIMIT 1");
 
@@ -74,7 +110,7 @@ if ($roll <= 80) {
 
     } else {
         // Fallback
-        $result = $spider->crawl_direct_rss('globaltimes');
+        $result = $spider->crawl_direct_rss('technode');
     }
 } elseif ($roll <= 95) {
     // Google News Topic Mode (Legacy 5%)

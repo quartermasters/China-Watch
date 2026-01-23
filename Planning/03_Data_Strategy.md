@@ -42,3 +42,18 @@ Only interesting events.
 -   **Ingestion**: "Upsert" logic to prevent duplicates (`INSERT IGNORE` or `ON DUPLICATE KEY UPDATE`).
 -   **Reading**: usage of "Covering Indexes" so charts can be rendered purely from index scans without hitting table data pages.
 -   **Pruning**: A cron script deletes `signals` older than 90 days, keeping only `daily_snapshots` for long-term trends, keeping table size manageable on shared hosting (usually 50GB limit).
+
+## External Intelligence & RAG Strategy (Deep Research)
+To augment our scrapers, we employ a **Hybrid RAG Model**:
+
+### 1. Primary Collection (SmartSpider)
+-   **Target**: Known entities (Global Times, Caixin, etc.) via direct RSS and Google News.
+-   **Goal**: Full-text archiving for ownership and offline analysis.
+
+### 2. Deep Research (Perplexity API / Sonar)
+-   **Role**: Acting as the "Lead Analyst" step before deep scraping.
+-   **Workflow**:
+    1.  **Discovery**: Query `sonar-pro` for "Emerging supply chain blocks in Shenzhen".
+    2.  **Citation Extraction**: Parse the *Citations* list returned by Perplexity to find new, high-value source URLs.
+    3.  **Targeted Archiving**: Feed these specific URLs to `SmartSpider` to capture the full raw text (bypassing the need to search blind).
+-   **Benefit**: Reduces "noise" crawling and ensures we only archive high-relevance content cited by a reasoning engine.
