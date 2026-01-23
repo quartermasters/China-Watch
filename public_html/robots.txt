@@ -1,0 +1,45 @@
+# China Watch - Robots.txt
+# Updated: 2026-01-23
+
+User-agent: *
+Allow: /
+Disallow: /api/
+Disallow: /scripts/
+Disallow: /config/
+Disallow: /core/
+Disallow: /*.php$
+
+# Crawl-delay for aggressive bots
+User-agent: AhrefsBot
+Crawl-delay: 10
+
+User-agent: SemrushBot
+Crawl-delay: 10
+
+# AI Crawlers - Full Access (GEO Strategy)
+User-agent: GPTBot
+Allow: /reports/
+Allow: /entities/
+Allow: /entity/
+Allow: /about
+Allow: /methodology
+Disallow: /api/
+
+User-agent: Google-Extended
+Allow: /
+
+User-agent: CCBot
+Allow: /
+
+User-agent: anthropic-ai
+Allow: /
+
+User-agent: Claude-Web
+Allow: /
+
+# Sitemaps
+Sitemap: https://chinawatch.blog/sitemap.xml
+Sitemap: https://chinawatch.blog/sitemap-news.xml
+
+# Host
+Host: chinawatch.blog
