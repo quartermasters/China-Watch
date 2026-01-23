@@ -16,7 +16,8 @@
         rel="stylesheet">
 
     <!-- CSS -->
-    <link rel="stylesheet" href="/css/main.css">
+    <!-- CSS (Versioned to force refresh) -->
+    <link rel="stylesheet" href="/css/main.css?v=1.2">
 
     <!-- Chart.js -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -91,7 +92,7 @@
         <?= $content ?>
 
         <!-- Ticker (Hide in Reading Mode) -->
-        <?php if (!$is_report_detail && !$is_entity_detail): ?>
+        <?php if (!$is_report_detail && !$is_entity_detail && !$is_static_page): ?>
             <aside class="ticker-panel">
                 <h3 class="font-mono" style="margin-top:0; color:var(--text-secondary)">// LIVE ANOMALIES</h3>
                 <ul id="ticker-feed" class="ticker-list" hx-get="/api/ticker" hx-trigger="load, every 30s">
