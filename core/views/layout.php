@@ -6,16 +6,34 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>
         <?= $page_title ?? 'China Watch' ?>
-</title>
+    </title>
 
     <!-- SEO Meta Tags -->
-    <meta name="description" content="<?= htmlspecialchars($meta_description ?? 'China Watch: Real-time intelligence on China\'s economy, policy, and geopolitics. AI-powered analysis of economic signals and regulatory changes.') ?>">
+    <meta name="description"
+        content="<?= htmlspecialchars($meta_description ?? 'China Watch: Real-time intelligence on China\'s economy, policy, and geopolitics. AI-powered analysis of economic signals and regulatory changes.') ?>">
     <link rel="canonical" href="<?= $canonical_url ?? 'https://chinawatch.blog' . $_SERVER['REQUEST_URI'] ?>">
+
+    <!-- Language and International SEO -->
+    <meta name="language" content="en">
+    <link rel="alternate" hreflang="en"
+        href="<?= $canonical_url ?? 'https://chinawatch.blog' . $_SERVER['REQUEST_URI'] ?>">
+    <link rel="alternate" hreflang="x-default"
+        href="<?= $canonical_url ?? 'https://chinawatch.blog' . $_SERVER['REQUEST_URI'] ?>">
+
+    <!-- Additional SEO Meta -->
+    <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
+    <meta name="googlebot" content="index, follow">
+    <meta name="author" content="China Watch Intelligence">
+    <meta name="publisher" content="China Watch">
+    <meta name="geo.region" content="US">
+    <meta name="geo.placename" content="Global">
+    <meta name="classification" content="Intelligence, Economics, China, Geopolitics">
 
     <!-- Open Graph -->
     <meta property="og:type" content="<?= $og_type ?? 'website' ?>">
     <meta property="og:title" content="<?= htmlspecialchars($page_title ?? 'China Watch // Intel') ?>">
-    <meta property="og:description" content="<?= htmlspecialchars($meta_description ?? 'Real-time intelligence on China') ?>">
+    <meta property="og:description"
+        content="<?= htmlspecialchars($meta_description ?? 'Real-time intelligence on China') ?>">
     <meta property="og:url" content="<?= $canonical_url ?? 'https://chinawatch.blog' . $_SERVER['REQUEST_URI'] ?>">
     <meta property="og:site_name" content="China Watch">
     <meta property="og:image" content="<?= $og_image ?? 'https://chinawatch.blog/public/assets/og-default.jpg' ?>">
@@ -23,8 +41,41 @@
     <!-- Twitter Cards -->
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="<?= htmlspecialchars($page_title ?? 'China Watch // Intel') ?>">
-    <meta name="twitter:description" content="<?= htmlspecialchars($meta_description ?? 'Real-time intelligence on China') ?>">
+    <meta name="twitter:description"
+        content="<?= htmlspecialchars($meta_description ?? 'Real-time intelligence on China') ?>">
     <meta name="twitter:image" content="<?= $og_image ?? 'https://chinawatch.blog/public/assets/og-default.jpg' ?>">
+
+    <!-- Article Meta Tags (for reports/articles) -->
+    <?php if (isset($article_published_time)): ?>
+        <meta property="article:published_time" content="<?= date('c', strtotime($article_published_time)) ?>">
+        <meta property="article:modified_time"
+            content="<?= date('c', strtotime($article_modified_time ?? $article_published_time)) ?>">
+        <meta property="article:section" content="Intelligence">
+        <meta property="article:author" content="China Watch Intelligence">
+        <?php if (!empty($article_tags)): ?>
+            <?php foreach ($article_tags as $tag): ?>
+                <meta property="article:tag" content="<?= htmlspecialchars($tag) ?>">
+            <?php endforeach; ?>
+        <?php endif; ?>
+    <?php endif; ?>
+
+    <!-- Resource Hints for Performance -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+    <link rel="preconnect" href="https://unpkg.com" crossorigin>
+    <link rel="dns-prefetch" href="https://fonts.googleapis.com">
+    <link rel="dns-prefetch" href="https://fonts.gstatic.com">
+    <link rel="dns-prefetch" href="https://cdn.jsdelivr.net">
+    <link rel="dns-prefetch" href="https://unpkg.com">
+
+    <!-- Fonts -->
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&family=JetBrains+Mono:wght@400;700&display=swap"
+        rel="stylesheet">
+
+    <!-- CSS (Versioned to force refresh) -->
+    <link rel="stylesheet" href="/css/main.min.css?v=2.0">
 
     <!-- Schema.org Organization -->
     <script type="application/ld+json">
@@ -39,6 +90,31 @@
       "sameAs": [
         "https://twitter.com/chinawatch"
       ]
+    }
+    </script>
+
+    <!-- Schema.org WebSite with SearchAction -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebSite",
+      "name": "China Watch",
+      "alternateName": "China Watch Intelligence",
+      "url": "https://chinawatch.blog",
+      "description": "Real-time intelligence on China's economy, policy, and geopolitical developments. AI-powered OSINT analysis.",
+      "publisher": {
+        "@type": "Organization",
+        "name": "China Watch",
+        "url": "https://chinawatch.blog"
+      },
+      "potentialAction": {
+        "@type": "SearchAction",
+        "target": {
+          "@type": "EntryPoint",
+          "urlTemplate": "https://chinawatch.blog/entities?q={search_term_string}"
+        },
+        "query-input": "required name=search_term_string"
+      }
     }
     </script>
 </head>
