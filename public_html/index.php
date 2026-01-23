@@ -31,8 +31,16 @@ $router->get('/entity/{id}', [\RedPulse\Controllers\EntitiesController::class, '
 $router->get('/reports', [\RedPulse\Controllers\ReportController::class, 'index']);
 $router->get('/reports/{slug}', [\RedPulse\Controllers\ReportController::class, 'show']);
 
+// Tags (Topics)
+$router->get('/tags', [\RedPulse\Controllers\TagController::class, 'index']);
+$router->get('/tag/{slug}', [\RedPulse\Controllers\TagController::class, 'show']);
+
 // SEO (Sitemaps)
+$router->get('/sitemapindex.xml', [\RedPulse\Controllers\SitemapController::class, 'sitemapIndex']);
 $router->get('/sitemap.xml', [\RedPulse\Controllers\SitemapController::class, 'index']);
+$router->get('/sitemap-reports.xml', [\RedPulse\Controllers\SitemapController::class, 'reports']);
+$router->get('/sitemap-entities.xml', [\RedPulse\Controllers\SitemapController::class, 'entities']);
+$router->get('/sitemap-tags.xml', [\RedPulse\Controllers\SitemapController::class, 'tags']);
 $router->get('/sitemap-news.xml', [\RedPulse\Controllers\SitemapController::class, 'news']);
 
 // HTMX Endpoints
