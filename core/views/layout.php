@@ -191,7 +191,7 @@
         <!-- Ticker (Hide in Reading Mode) -->
         <?php if (!$is_report_detail && !$is_entity_detail && !$is_static_page): ?>
             <aside class="ticker-panel">
-                <h3 class="font-mono" style="margin-top:0; color:var(--text-secondary)">// LIVE ANOMALIES</h3>
+                <h3 class="font-mono" style="margin-top:0; color:var(--text-secondary)">// LIVE REPORTS</h3>
                 <ul id="ticker-feed" class="ticker-list" hx-get="/api/ticker" hx-trigger="load, every 30s">
                     <!-- HTMX will load list items here -->
                     <li class="font-mono text-amber">Loading stream...</li>

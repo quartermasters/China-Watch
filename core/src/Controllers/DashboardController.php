@@ -23,66 +23,30 @@ class DashboardController
 
         View::render('dashboard', [
             'signals' => $signals,
-            'page_title' => 'China Watch | Signal Intelligence'
+            'page_title' => 'China Watch // Real-Time Intelligence on China',
+            'meta_description' => 'China Watch: Automated OSINT intelligence platform monitoring China\'s economy, policy, and geopolitical developments. Real-time signals from Shanghai Port, lithium markets, and regulatory activity.',
+            'canonical_url' => 'https://chinawatch.blog/'
         ]);
     }
 
     public function ticker(): void
     {
-        // Mock Data with IDs for interaction
-        $anomalies = [
-            [
-                'id' => 'ANOM-2026-884',
-                'message' => 'CRITICAL: Unscheduled maintenance at key lithium processing hub.',
-                'severity' => 'critical',
-                'created_at' => '2026-01-19 20:54:02',
-                'details' => [
-                    'target' => 'Ganfeng Lithium - Mahong Factory (Unit 4)',
-                    'location' => 'Xinyu, Jiangxi Province',
-                    'impact' => 'Estimated output reduction of 450 MT/week. Spot prices likely to react +2-4%.',
-                    'source' => 'Sentinet Satellite Thermal Imaging & Local Energy Consumption Data'
-                ]
-            ],
-            [
-                'id' => 'ANOM-2026-883',
-                'message' => 'Shanghai municipal government releases guidance on AI infrastructure subsidies.',
-                'severity' => 'info',
-                'created_at' => '2026-01-19 19:54:02',
-                'details' => [
-                    'target' => 'Shanghai Municipal Commission of Economy and Informatization',
-                    'location' => 'Shanghai',
-                    'impact' => 'Fiscal allocation of 20B RMB for GPU clusters. Bullish for domestic chipmakers.',
-                    'source' => 'Official Gov Portal (Crawled)'
-                ]
-            ],
-            [
-                'id' => 'ANOM-2026-882',
-                'message' => 'PBOC signals potential reserve requirement ratio adjustment.',
-                'severity' => 'warning',
-                'created_at' => '2026-01-19 19:53:02',
-                'details' => [
-                    'target' => 'People\'s Bank of China',
-                    'location' => 'Beijing',
-                    'impact' => 'Liquidity injection imminent. Banking sector volatility expected.',
-                    'source' => 'Financial News (State Media)'
-                ]
-            ]
-        ];
+        // HTMX Polling Endpoint - FETCH LATEST REPORTS
+        $reports = DB::query("SELECT id, title, slug, published_at FROM reports ORDER BY published_at DESC LIMIT 5");
 
-        foreach ($anomalies as $a) {
-            $color = match ($a['severity']) {
-                'critical' => 'text-[var(--signal-red)]',
-                'warning' => 'text-[var(--signal-amber)]',
-                default => 'text-[var(--signal-blue)]'
-            };
+        if (empty($reports)) {
+            echo "<li class='text-[var(--text-muted)] font-mono text-sm'>No active reports.</li>";
+            exit;
+        }
 
-            // HTMX: Click to load details into modal
-            echo "<li 
-                hx-get='/api/anomaly/{$a['id']}' 
-                hx-target='#anomaly-modal-container' 
-                class='{$color} font-mono text-sm cursor-pointer hover:bg-white/5 p-1 transition-colors'
-                style='cursor:pointer;'>
-                [{$a['created_at']}] {$a['message']}
+        foreach ($reports as $r) {
+            $date = date('H:i', strtotime($r['published_at']));
+            $color = 'text-[var(--text-secondary)]';
+
+            echo "<li class='{$color} font-mono text-xs cursor-pointer hover:bg-white/5 p-2 transition-colors border-b border-[var(--border-subtle)]'>
+                <a href='/reports/{$r['slug']}' class='block hover:text-[var(--signal-blue)]' style='text-decoration:none; color:inherit;'>
+                    <span class='text-[var(--signal-blue)]'>[{$date}]</span> {$r['title']}
+                </a>
             </li>";
         }
         exit;
@@ -90,41 +54,18 @@ class DashboardController
 
     public function anomaly_detail(string $id): void
     {
-        // In a real app, fetch from DB by ID. 
-        // Here we reconstruct the specific mock data based on ID for the demo.
+        // Fetch Real Details from DB
+        // Security: Ensure ID is integer to prevent injection
+        $id = (int) $id;
 
-        $details = [];
-        if ($id === 'ANOM-2026-884') {
-            $details = [
-                'id' => 'ANOM-2026-884',
-                'title' => 'CRITICAL MAINTENANCE ALERT',
-                'target' => 'Ganfeng Lithium - Mahong Factory (Unit 4)',
-                'location' => 'Xinyu, Jiangxi Province',
-                'impact' => 'Estimated output reduction of 450 MT/week. Spot prices likely to react +2-4%.',
-                'source' => 'Sentinet Satellite Thermal Imaging & Local Energy Consumption Data',
-                'severity' => 'critical'
-            ];
-        } elseif ($id === 'ANOM-2026-883') {
-            $details = [
-                'id' => 'ANOM-2026-883',
-                'title' => 'POLICY SHIFT DETECTED',
-                'target' => 'Shanghai Municipal Commission of Economy and Informatization',
-                'location' => 'Shanghai',
-                'impact' => 'Fiscal allocation of 20B RMB for GPU clusters. Bullish for domestic chipmakers.',
-                'source' => 'Official Gov Portal (Crawled)',
-                'severity' => 'info'
-            ];
-        } else {
-            $details = [
-                'id' => $id,
-                'title' => 'MONETARY POLICY SIGNAL',
-                'target' => 'People\'s Bank of China',
-                'location' => 'Beijing',
-                'impact' => 'Liquidity injection imminent. Banking sector volatility expected.',
-                'source' => 'Financial News (State Media)',
-                'severity' => 'warning'
-            ];
+        $data = DB::query("SELECT * FROM anomalies WHERE id = " . $id . " LIMIT 1");
+
+        if (empty($data)) {
+            echo "<div class='text-red-500 font-mono p-4'>Error: Anomaly #{$id} not found in archive.</div>";
+            return;
         }
+
+        $details = $data[0];
 
         $borderColor = match ($details['severity']) {
             'critical' => 'border-red-500',
@@ -145,27 +86,27 @@ class DashboardController
                 <button class='absolute top-4 right-4 text-gray-500 hover:text-white' onclick='this.closest(\".fixed\").remove()'>[X] CLOSE</button>
                 
                 <h2 class='text-2xl font-mono {$textColor} mb-2'>// INTELLIGENCE BRIEF</h2>
-                <div class='text-xs text-gray-600 font-mono mb-6'>ID: {$details['id']} | DECLASSIFIED FOR CLIENT</div>
+                <div class='text-xs text-gray-600 font-mono mb-6'>ID: CLSF-{$details['id']} | DECLASSIFIED FOR CLIENT</div>
 
                 <div class='space-y-4 font-mono text-sm'>
                     <div>
                         <span class='text-gray-500 block text-xs uppercase'>Target Entity</span>
-                        <span class='text-white text-lg'>{$details['target']}</span>
+                        <span class='text-white text-lg'>" . ($details['target'] ?? 'Unknown Entity') . "</span>
                     </div>
 
                     <div>
                         <span class='text-gray-500 block text-xs uppercase'>Location</span>
-                        <span class='text-gray-300'>{$details['location']}</span>
+                        <span class='text-gray-300'>" . ($details['location'] ?? 'Classified') . "</span>
                     </div>
 
                     <div class='p-4 bg-white/5 border-l-2 {$borderColor}'>
                         <span class='text-gray-500 block text-xs uppercase mb-1'>Projected Impact</span>
-                        <span class='text-white'>{$details['impact']}</span>
+                        <span class='text-white'>" . ($details['impact'] ?? 'Impact Assessment Pending') . "</span>
                     </div>
 
                     <div>
                         <span class='text-gray-500 block text-xs uppercase'>Intelligence Source</span>
-                        <span class='text-gray-400'>{$details['source']}</span>
+                        <span class='text-gray-400'>" . ($details['source'] ?? 'General Telemetry') . "</span>
                     </div>
                 </div>
 
