@@ -6,25 +6,41 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>
         <?= $page_title ?? 'China Watch' ?>
-    </title>
+</title>
 
-    <!-- Fonts -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link
-        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&family=JetBrains+Mono:wght@400;700&display=swap"
-        rel="stylesheet">
+    <!-- SEO Meta Tags -->
+    <meta name="description" content="<?= htmlspecialchars($meta_description ?? 'China Watch: Real-time intelligence on China\'s economy, policy, and geopolitics. AI-powered analysis of economic signals and regulatory changes.') ?>">
+    <link rel="canonical" href="<?= $canonical_url ?? 'https://chinawatch.blog' . $_SERVER['REQUEST_URI'] ?>">
 
-    <!-- CSS (Versioned to force refresh) -->
-    <link rel="stylesheet" href="/css/main.css?v=1.3">
+    <!-- Open Graph -->
+    <meta property="og:type" content="<?= $og_type ?? 'website' ?>">
+    <meta property="og:title" content="<?= htmlspecialchars($page_title ?? 'China Watch // Intel') ?>">
+    <meta property="og:description" content="<?= htmlspecialchars($meta_description ?? 'Real-time intelligence on China') ?>">
+    <meta property="og:url" content="<?= $canonical_url ?? 'https://chinawatch.blog' . $_SERVER['REQUEST_URI'] ?>">
+    <meta property="og:site_name" content="China Watch">
+    <meta property="og:image" content="<?= $og_image ?? 'https://chinawatch.blog/public/assets/og-default.jpg' ?>">
 
-    <!-- Chart.js -->
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script src="https://unpkg.com/htmx.org@1.9.10"></script>
+    <!-- Twitter Cards -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="<?= htmlspecialchars($page_title ?? 'China Watch // Intel') ?>">
+    <meta name="twitter:description" content="<?= htmlspecialchars($meta_description ?? 'Real-time intelligence on China') ?>">
+    <meta name="twitter:image" content="<?= $og_image ?? 'https://chinawatch.blog/public/assets/og-default.jpg' ?>">
 
-    <!-- Google AdSense (Placeholder) -->
-    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-xxxxxxxxxxxx"
-        crossorigin="anonymous"></script>
+    <!-- Schema.org Organization -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "Organization",
+      "name": "China Watch",
+      "legalName": "Distributed Intelligence Node",
+      "url": "https://chinawatch.blog",
+      "logo": "https://chinawatch.blog/public/assets/logo.png",
+      "description": "Real-time intelligence platform monitoring China's economy, policy, and geopolitical developments.",
+      "sameAs": [
+        "https://twitter.com/chinawatch"
+      ]
+    }
+    </script>
 </head>
 
 <body>
