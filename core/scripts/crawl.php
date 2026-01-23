@@ -1,20 +1,15 @@
 <?php
-// core/scripts/crawl.php
-// Run this via Cron every Hour
-
-require_once __DIR__ . '/../src/bootstrap.php';
-
-use RedPulse\Core\DB;
-use RedPulse\Services\Spider;
-
-header('Content-Type: text/plain');
-
 // DEBUG: Log to file immediately to confirm execution
 $logFile = __DIR__ . '/spider.log';
 file_put_contents($logFile, "[START] Script started at " . date('Y-m-d H:i:s') . "\n", FILE_APPEND);
 ini_set('display_errors', '1');
 ini_set('log_errors', '1');
 ini_set('error_log', $logFile);
+
+// core/scripts/crawl.php
+// Run this via Cron every Hour
+
+require_once __DIR__ . '/../src/bootstrap.php';
 
 echo "[SPIDER] Started at " . date('Y-m-d H:i:s') . "\n";
 
