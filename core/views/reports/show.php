@@ -1,9 +1,41 @@
 <div class="report-container" style="max-width: 800px; margin: 0 auto; padding: 2rem 1rem;">
 
-    <div class="mb-8">
-        <a href="/reports" class="text-[var(--text-secondary)] hover:text-white font-mono text-sm">&larr; BACK TO
-            ARCHIVE</a>
-    </div>
+    <nav aria-label="Breadcrumb" class="mb-8 font-mono text-sm text-[var(--text-secondary)]">
+        <a href="/" class="hover:text-white">DASHBOARD</a>
+        <span class="mx-2">/</span>
+        <a href="/reports" class="hover:text-white">INTEL ARCHIVE</a>
+        <span class="mx-2">/</span>
+        <span class="text-[var(--signal-blue)]">REPORT #<?= $report['id'] ?></span>
+    </nav>
+
+    <!-- NewsArticle Schema (GEO Optimized) -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "NewsArticle",
+      "headline": "<?= addslashes($report['title']) ?>",
+      "image": [
+        "https://chinawatch.blog/public/assets/og-default.jpg"
+      ],
+      "datePublished": "<?= date('c', strtotime($report['published_at'])) ?>",
+      "dateModified": "<?= date('c', strtotime($report['published_at'])) ?>",
+      "author": [{
+          "@type": "Organization",
+          "name": "China Watch Intelligence",
+          "url": "https://chinawatch.blog"
+      }],
+      "publisher": {
+          "@type": "Organization",
+          "name": "China Watch",
+          "logo": {
+            "@type": "ImageObject",
+            "url": "https://chinawatch.blog/public/assets/logo.png"
+          }
+      },
+      "description": "<?= addslashes(strip_tags($report['summary'])) ?>",
+      "articleSection": "Intelligence"
+    }
+    </script>
 
     <article class="prose prose-invert lg:prose-xl">
         <header class="mb-10 border-b border-[var(--border-subtle)] pb-8">
