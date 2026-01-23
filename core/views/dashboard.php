@@ -1,3 +1,6 @@
+<!-- SEO: Screen Reader Only H1 for Dashboard -->
+<h1 class="sr-only">China Watch Intelligence Dashboard - Real-Time China Economic Data</h1>
+
 <!-- Hero Metric 1: Lithium -->
 <div class="tile">
     <div class="label font-mono text-secondary">LITHIUM CARBONATE</div>
@@ -16,7 +19,8 @@
 
 <!-- Hero Metric 2: Port Traffic -->
 <div class="tile">
-    <div class="label font-mono text-secondary">SHANGHAI PORT (TEU)</div>
+    <h2 class="label font-mono text-secondary" style="font-size:1rem; margin:0; font-weight:normal;">SHANGHAI PORT (TEU)
+    </h2>
     <div class="value font-mono" style="font-size: 2rem; margin: 0.5rem 0;">
         <?= number_format($signals['shanghai_port']['value']) ?>
     </div>
@@ -31,7 +35,8 @@
 
 <!-- Hero Metric 3: Regulatory -->
 <div class="tile">
-    <div class="label font-mono text-secondary">REGULATORY VELOCITY</div>
+    <h2 class="label font-mono text-secondary" style="font-size:1rem; margin:0; font-weight:normal;">REGULATORY VELOCITY
+    </h2>
     <div class="value font-mono" style="font-size: 2rem; margin: 0.5rem 0;">
         <?= $signals['regulatory_velocity']['value'] ?> <span class="text-secondary"
             style="font-size:1rem">DOCS/HR</span>
@@ -51,7 +56,7 @@
 
 <!-- Map Container -->
 <div class="tile wide tall" style="min-height: 400px; padding:0; overflow:hidden;">
-    <div id="map" style="width:100%; height:100%;"></div>
+    <div id="map" style="width:100%; height:100%; background:#111;"></div>
 </div>
 
 <!-- Ad Slot B: Context Tile -->
@@ -65,49 +70,48 @@
 </div>
 
 <!-- Map Script -->
+<!-- Leaflet Map Script (Deferred for Performance) -->
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+    integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+    integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin="" defer></script>
+
 <script>
-    function initMap() {
-        const shanghai = { lat: 31.2304, lng: 121.4737 };
-        const map = new google.maps.Map(document.getElementById("map"), {
+    // Defer execution until window load to prioritize Paint
+    window.addEventListener('load', function () {
+        // Initialize Leaflet
+        var map = L.map('map', {
+            center: [31.2304, 121.4737], // Shanghai
             zoom: 11,
-            center: shanghai,
-            disableDefaultUI: true,
-            styles: [
-                { elementType: "geometry", stylers: [{ color: "#212121" }] },
-                { elementType: "labels.icon", stylers: [{ visibility: "off" }] },
-                { elementType: "labels.text.fill", stylers: [{ color: "#757575" }] },
-                { elementType: "labels.text.stroke", stylers: [{ color: "#212121" }] },
-                { featureType: "administrative", elementType: "geometry", stylers: [{ color: "#757575" }] },
-                { featureType: "administrative.country", elementType: "labels.text.fill", stylers: [{ color: "#9e9e9e" }] },
-                { featureType: "administrative.land_parcel", stylers: [{ visibility: "off" }] },
-                { featureType: "administrative.locality", elementType: "labels.text.fill", stylers: [{ color: "#bdbdbd" }] },
-                { featureType: "poi", elementType: "labels.text.fill", stylers: [{ color: "#757575" }] },
-                { featureType: "poi.park", elementType: "geometry", stylers: [{ color: "#181818" }] },
-                { featureType: "poi.park", elementType: "labels.text.fill", stylers: [{ color: "#616161" }] },
-                { featureType: "road", elementType: "geometry.fill", stylers: [{ color: "#2c2c2c" }] },
-                { featureType: "road", elementType: "labels.text.fill", stylers: [{ color: "#8a8a8a" }] },
-                { featureType: "road.arterial", elementType: "geometry", stylers: [{ color: "#373737" }] },
-                { featureType: "road.highway", elementType: "geometry", stylers: [{ color: "#3c3c3c" }] },
-                { featureType: "road.highway.controlled_access", elementType: "geometry", stylers: [{ color: "#4e4e4e" }] },
-                { featureType: "road.local", elementType: "labels.text.fill", stylers: [{ color: "#616161" }] },
-                { featureType: "transit", elementType: "labels.text.fill", stylers: [{ color: "#757575" }] },
-                { featureType: "water", elementType: "geometry", stylers: [{ color: "#000000" }] },
-                { featureType: "water", elementType: "labels.text.fill", stylers: [{ color: "#3d3d3d" }] }
-            ]
+            zoomControl: false, // Keep UI clean
+            attributionControl: false
         });
 
-        new google.maps.Marker({
-            position: shanghai,
-            map: map,
-            title: "Shanghai Port High Activity"
+        // CartoDB Dark Matter Tiles (Premium Dark Look)
+        L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
+            maxZoom: 20
+        }).addTo(map);
+
+        // Add Custom Marker
+        var icon = L.divIcon({
+            className: 'custom-pin',
+            html: '<div style="width:12px; height:12px; background:#0A84FF; border-radius:50%; box-shadow:0 0 15px #0A84FF; border:2px solid white;"></div>',
+            iconSize: [12, 12],
+            iconAnchor: [6, 6]
         });
-    }
+
+        L.marker([31.2304, 121.4737], { icon: icon }).addTo(map)
+            .bindPopup('<div style="color:black"><b>Shanghai Port</b><br>High Activity Detected</div>');
+
+        // Force map invalidation to ensure correct render/resize
+        setTimeout(() => { map.invalidateSize(); }, 500);
+    });
 </script>
-<script src="https://maps.googleapis.com/maps/api/js?key=<?= GOOGLE_MAPS_KEY ?>&callback=initMap" async defer></script>
 
 <!-- Context Tile -->
 <div class="tile tall">
-    <div class="label font-mono text-secondary">ANALYST BRIEFING</div>
+    <h2 class="label font-mono text-secondary" style="font-size:1rem; margin:0; font-weight:normal;">ANALYST BRIEFING
+    </h2>
     <p style="line-height: 1.6; color: var(--text-secondary); margin-top: 1rem; font-size:0.95rem;">
         Shipping congestion in Shanghai is creating downstream delays for US West Coast logistics.
         Meanwhile, regulatory volume from the CAC suggests an imminent data security announcement.
@@ -115,8 +119,9 @@
 </div>
 
 <!-- Chart Logic -->
-<script>
-    document.addEventListener('DOMContentLoaded', function () {
+<script src="https://cdn.jsdelivr.net/npm/chart.js" defer></script>
+<script defer>
+    window.addEventListener('load', function () {
         // Common Options
         const sparkOptions = {
             responsive: true,
@@ -133,7 +138,7 @@
                 labels: [1, 2, 3, 4, 5, 6, 7],
                 datasets: [{
                     data: [102000, 101000, 99500, 99000, 98800, 98500, 98500], // Downward trend
-                    borderColor: '#30D158', // Green (Good for buyers, bad for sellers - sticking to signal green)
+                    borderColor: '#30D158', // Green
                     borderWidth: 2,
                     tension: 0.4
                 }]
@@ -147,7 +152,7 @@
             data: {
                 labels: [1, 2, 3, 4, 5, 6, 7],
                 datasets: [{
-                    data: [120, 125, 130, 135, 140, 142, 145], // Upward trend (Congestion)
+                    data: [120, 125, 130, 135, 140, 142, 145], // Upward trend
                     borderColor: '#FFD60A', // Amber
                     borderWidth: 2,
                     tension: 0.4
