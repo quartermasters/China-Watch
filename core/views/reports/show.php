@@ -33,7 +33,43 @@
           }
       },
       "description": "<?= addslashes(strip_tags($report['summary'])) ?>",
-      "articleSection": "Intelligence"
+      "articleSection": "Intelligence",
+      "speakable": {
+        "@type": "SpeakableSpecification",
+        "cssSelector": [".report-content h1", ".report-content h2", ".report-content p:first-of-type"]
+      },
+      "mainEntityOfPage": {
+        "@type": "WebPage",
+        "@id": "https://chinawatch.blog/reports/<?= $report['slug'] ?>"
+      }
+    }
+    </script>
+
+    <!-- BreadcrumbList Schema -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "Home",
+          "item": "https://chinawatch.blog/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "Intelligence Archive",
+          "item": "https://chinawatch.blog/reports"
+        },
+        {
+          "@type": "ListItem",
+          "position": 3,
+          "name": "<?= addslashes($report['title']) ?>",
+          "item": "https://chinawatch.blog/reports/<?= $report['slug'] ?>"
+        }
+      ]
     }
     </script>
 
@@ -41,12 +77,11 @@
         <header class="mb-10 border-b border-[var(--border-subtle)] pb-8">
             <div class="flex items-center gap-4 text-xs font-mono text-[var(--signal-blue)] mb-4">
                 <span>// CLASSIFIED: PUBLIC</span>
-                <span>
+                <time datetime="<?= date('c', strtotime($report['published_at'])) ?>">
                     <?= date('Y-m-d H:i', strtotime($report['published_at'])) ?>
-                </span>
-                <span>VIEWS:
-                    <?= $report['views'] ?>
-                </span>
+                </time>
+                <span><?= $reading_time ?? 5 ?> MIN READ</span>
+                <span>VIEWS: <?= $report['views'] ?></span>
             </div>
 
             <h1 class="text-4xl md:text-5xl font-bold font-ui mb-6 leading-tight tracking-tight">
@@ -63,18 +98,45 @@
         </div>
 
         <footer class="mt-12 pt-8 border-t border-[var(--border-subtle)]">
-            <div class="flex gap-2">
+            <div class="flex flex-wrap gap-2">
                 <?php
                 $tags = json_decode($report['tags'], true) ?? [];
                 foreach ($tags as $tag): ?>
-                    <span
-                        class="px-3 py-1 bg-[var(--bg-surface)] border border-[var(--border-subtle)] text-xs font-mono rounded-full">
-                        #
-                        <?= strtoupper($tag) ?>
-                    </span>
+                    <a href="/tag/<?= urlencode(strtolower($tag)) ?>"
+                        class="px-3 py-1 bg-[var(--bg-surface)] border border-[var(--border-subtle)] text-xs font-mono rounded-full hover:border-[var(--signal-blue)] hover:text-[var(--signal-blue)] transition-colors">
+                        #<?= strtoupper(htmlspecialchars($tag)) ?>
+                    </a>
                 <?php endforeach; ?>
             </div>
         </footer>
+
+        <!-- Data Sources Section (GEO Optimization) -->
+        <section class="data-provenance mt-8 pt-8 border-t border-[var(--border-subtle)]">
+            <h3 class="font-mono text-sm text-[var(--text-secondary)] mb-4">// DATA PROVENANCE</h3>
+            <div class="bg-[var(--bg-surface)] rounded-lg p-5 text-sm space-y-3">
+                <?php if (!empty($report['source_url'])): ?>
+                    <p class="flex items-start gap-2">
+                        <span class="text-[var(--signal-blue)] font-mono">PRIMARY SOURCE:</span>
+                        <a href="<?= htmlspecialchars($report['source_url']) ?>" target="_blank" rel="noopener noreferrer"
+                            class="text-[var(--text-secondary)] hover:text-[var(--signal-blue)] hover:underline break-all">
+                            <?= parse_url($report['source_url'], PHP_URL_HOST) ?? 'External Source' ?>
+                        </a>
+                    </p>
+                <?php endif; ?>
+
+                <p class="flex items-start gap-2">
+                    <span class="text-[var(--signal-blue)] font-mono">PUBLISHED:</span>
+                    <time datetime="<?= date('c', strtotime($report['published_at'])) ?>"
+                        class="text-[var(--text-secondary)]">
+                        <?= date('F j, Y \a\t H:i', strtotime($report['published_at'])) ?> UTC
+                    </time>
+                </p>
+                <p class="flex items-start gap-2">
+                    <span class="text-[var(--signal-blue)] font-mono">CLASSIFICATION:</span>
+                    <span class="text-[var(--text-secondary)]">PUBLIC // OPEN SOURCE INTELLIGENCE</span>
+                </p>
+            </div>
+        </section>
 
         <?php if (!empty($related_reports)): ?>
             <div class="mt-16 pt-8 border-t border-[var(--border-subtle)]">

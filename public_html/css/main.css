@@ -18,8 +18,9 @@
 
     /* Text */
     --text-primary: #FFFFFF;
-    --text-secondary: rgba(255, 255, 255, 0.6);
-    --text-muted: rgba(255, 255, 255, 0.4);
+    /* Ultra High Contrast (AAA Compliant) */
+    --text-secondary: rgba(255, 255, 255, 0.87);
+    --text-muted: rgba(255, 255, 255, 0.60);
 
     /* Typography */
     --font-ui: 'Inter', system-ui, -apple-system, sans-serif;
@@ -46,6 +47,19 @@ body {
 
 .hidden {
     display: none !important;
+}
+
+/* Screen Reader Only (Accessibility + SEO) */
+.sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
 }
 
 .text-red {
@@ -81,12 +95,18 @@ body {
     height: 100vh;
 }
 
-/* Reading Mode (Reports) - 2 Columns */
+/* Reading Mode (Reports) - Single Column Centered */
 .app-container.layout-reading {
-    grid-template-columns: 240px 1fr;
-    /* Remove Ticker Column */
-    max-width: 1400px;
-    /* Constrain width slightly for readability */
+    grid-template-columns: 1fr;
+    /* Remove Sidebar Column entirely */
+    max-width: 1200px;
+    /* Constrain width for readability, but center it */
+    height: auto;
+    min-height: 100vh;
+}
+
+.app-container.layout-reading .ticker-panel {
+    display: none;
 }
 
 /* Glass Header */

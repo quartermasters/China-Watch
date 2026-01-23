@@ -79,7 +79,9 @@ body {
 
 .app-container.layout-reading {
     grid-template-columns: 1fr;
-    max-width: 1200px
+    max-width: 1200px;
+    height: auto;
+    min-height: 100vh
 }
 
 .app-container.layout-reading .ticker-panel {
