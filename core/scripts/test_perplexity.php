@@ -1,11 +1,17 @@
 <?php
 // core/scripts/test_perplexity.php
 
-// 1. Get API Key from environment or hardcode for testing
-$apiKey = getenv('PERPLEXITY_API_KEY') ?: 'YOUR_KEY_HERE';
+// 0. Load Configuration
+$envPath = __DIR__ . '/../config/env.php';
+if (file_exists($envPath)) {
+    require_once $envPath;
+}
 
-if ($apiKey === 'YOUR_KEY_HERE') {
-    die("❌ Please set your PERPLEXITY_API_KEY in this file or environment.\n");
+// 1. Get API Key from Constant, Environment, or Hardcoded
+$apiKey = defined('PERPLEXITY_API_KEY') ? PERPLEXITY_API_KEY : (getenv('PERPLEXITY_API_KEY') ?: 'YOUR_KEY_HERE');
+
+if ($apiKey === 'YOUR_KEY_HERE' || $apiKey === 'YOUR_PERPLEXITY_API_KEY_HERE') {
+    die("❌ Please set your PERPLEXITY_API_KEY in core/config/env.php\n");
 }
 
 $url = 'https://api.perplexity.ai/chat/completions';

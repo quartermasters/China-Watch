@@ -13,6 +13,7 @@ require_once __DIR__ . '/../src/bootstrap.php';
 
 use RedPulse\Services\Spider;
 use RedPulse\Services\SmartSpider;
+use RedPulse\Services\PerplexityService;
 use RedPulse\Core\DB;
 
 echo "[SPIDER] Started at " . date('Y-m-d H:i:s') . "\n";
@@ -25,13 +26,64 @@ $result = ['status' => 'init'];
 // SmartSpider uses SerpAPI quota - use sparingly
 $roll = rand(1, 100);
 
-if ($roll <= 75) {
+if ($roll <= 70) {
     // Direct RSS feeds - verified working Jan 2026
     $feeds = ['technode', 'scmp', 'gnews_china', 'diplomat', 'aljazeera', 'cna_asia'];
     $feedKey = $feeds[array_rand($feeds)];
     echo "[SPIDER] Selected feed: {$feedKey}\n";
     $result = $spider->crawl_direct_rss($feedKey);
-} elseif ($roll <= 80) {
+} elseif ($roll <= 85) {
+    // DEEP RESEARCH MODE (15% Chance) - Powered by Perplexity (Sonar)
+    // This replaces manual searching with AI-driven discovery + Citation Harvesting
+    echo "[DEEP RESEARCH] Activated Perplexity Sonar...\n";
+
+    // Pick a broad topic to verify
+    $topics = [
+        'China semiconductor export controls',
+        'China EV tariffs EU US',
+        'China rare earth supply chain',
+        'China youth unemployment data',
+        'Xi Jinping recent speeches',
+        'China military exercises Taiwan',
+        'China real estate crisis updates'
+    ];
+    $topic = $topics[array_rand($topics)];
+    echo "[DEEP RESEARCH] Topic: $topic\n";
+
+    try {
+        $pplx = new PerplexityService();
+        $research = $pplx->research_topic($topic); // Returns report_content + citations
+
+        if (($research['status'] ?? '') === 'success') {
+            echo "[DEEP RESEARCH] Report Generated. Length: " . strlen($research['report_content']) . " chars.\n";
+
+            // 1. Save the Summary as a Report
+            $analyst = new \RedPulse\Services\AI\ReportGenerator();
+            // Format for analyst: Source, URL, Content
+            $analyst->generate_report('Perplexity AI', 'https://perplexity.ai/search', $research['report_content']);
+
+            // 2. Harvest Citations (The "Deep" part)
+            if (!empty($research['citations'])) {
+                echo "[DEEP RESEARCH] Harvesting " . count($research['citations']) . " citations...\n";
+                foreach ($research['citations'] as $citeUrl) {
+                    // Filter junk
+                    if (strpos($citeUrl, 'wikipedia') !== false)
+                        continue;
+
+                    echo "   -> Spidering citation: $citeUrl\n";
+                    $spider->process_url($citeUrl, 'Perplexity Citation');
+                }
+            }
+            $result = ['status' => 'success', 'mode' => 'perplexity', 'citations' => count($research['citations'])];
+        } else {
+            echo "[DEEP RESEARCH] Failed: " . ($research['message'] ?? 'Unknown error') . "\n";
+            $result = $spider->crawl_direct_rss('technode'); // Fallback
+        }
+    } catch (\Throwable $e) {
+        echo "[DEEP RESEARCH] Exception: " . $e->getMessage() . "\n";
+        $result = $spider->crawl_direct_rss('technode');
+    }
+} elseif ($roll <= 90) {
     // SMART SPIDER MODE (5% Chance) - Uses SerpAPI
     echo "[SPIDER] SmartSpider mode activated!\n";
 
