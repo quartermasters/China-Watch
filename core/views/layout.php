@@ -64,10 +64,12 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
     <link rel="preconnect" href="https://unpkg.com" crossorigin>
-    <link rel="dns-prefetch" href="https://fonts.googleapis.com">
-    <link rel="dns-prefetch" href="https://fonts.gstatic.com">
-    <link rel="dns-prefetch" href="https://cdn.jsdelivr.net">
-    <link rel="dns-prefetch" href="https://unpkg.com">
+
+    <!-- Preload Critical Assets -->
+    <link rel="preload" href="/css/main.min.css?v=2.0" as="style">
+    <link rel="preload"
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&family=JetBrains+Mono:wght@400;700&display=swap"
+        as="style">
 
     <!-- Fonts -->
     <link
@@ -75,7 +77,7 @@
         rel="stylesheet">
 
     <!-- CSS (Versioned to force refresh) -->
-    <link rel="stylesheet" href="/css/main.min.css?v=2.0">
+    <link rel="stylesheet" href="/css/main.min.css?v=2.1">
 
     <!-- Schema.org Organization -->
     <script type="application/ld+json">
@@ -170,7 +172,7 @@
                 <a href="/" class="nav-link <?= $uri === '/' ? 'active' : '' ?>">DASHBOARD</a>
                 <a href="/reports" class="nav-link <?= strpos($uri, '/reports') === 0 ? 'active' : '' ?>">REPORTS</a>
                 <a href="/entities" class="nav-link <?= strpos($uri, '/entit') === 0 ? 'active' : '' ?>">ENTITIES</a>
-                <a href="/methodology" class="nav-link">METHODOLOGY</a>
+
                 <a href="/about" class="nav-link">About</a>
                 <a href="/contact" class="nav-link">Contact</a>
             </nav>
@@ -228,6 +230,8 @@
                 <a href="/privacy">Privacy Policy</a>
                 <span class="divider">|</span>
                 <a href="/terms">Terms of Service</a>
+                <span class="divider">|</span>
+                <a href="/methodology">Methodology</a>
                 <span class="divider">|</span>
                 <a href="/contact">Contact</a>
             </div>

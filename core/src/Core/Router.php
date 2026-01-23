@@ -69,10 +69,16 @@ class Router
             return;
         }
 
-        // Dynamic Route: Entity Detail (Phase 8) - /entity/123
-        if (preg_match('#^/entity/(\d+)$#', $uri, $matches)) {
+        // Dynamic Route: Entity Detail - /entity/slug or /entity/123 (legacy)
+        if (preg_match('#^/entity/([a-zA-Z0-9-]+)$#', $uri, $matches)) {
             $controller = new \RedPulse\Controllers\EntitiesController();
-            $controller->show((int) $matches[1]);
+            $identifier = $matches[1];
+            // Check if it's a numeric ID (legacy) or slug
+            if (ctype_digit($identifier)) {
+                $controller->showById((int) $identifier);
+            } else {
+                $controller->showBySlug($identifier);
+            }
             return;
         }
 
@@ -80,6 +86,20 @@ class Router
         if ($uri === '/reports') {
             $controller = new \RedPulse\Controllers\ReportController();
             $controller->index();
+            return;
+        }
+
+        // Static Route for Tags Index
+        if ($uri === '/tags') {
+            $controller = new \RedPulse\Controllers\TagController();
+            $controller->index();
+            return;
+        }
+
+        // Dynamic Route: Tag Archive - /tag/economy
+        if (preg_match('#^/tag/([a-zA-Z0-9-_%+]+)$#', $uri, $matches)) {
+            $controller = new \RedPulse\Controllers\TagController();
+            $controller->show($matches[1]);
             return;
         }
 
