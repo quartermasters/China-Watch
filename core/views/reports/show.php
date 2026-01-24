@@ -1,11 +1,11 @@
 <div class="report-container" style="max-width: 800px; margin: 0 auto; padding: 2rem 1rem;">
 
-    <nav aria-label="Breadcrumb" class="mb-8 font-mono text-sm text-[var(--text-secondary)]">
-        <a href="/" class="hover:text-white">DASHBOARD</a>
+    <nav aria-label="Breadcrumb" class="mb-8 text-sm" style="color: var(--text-secondary);">
+        <a href="/" style="color: var(--text-secondary); text-decoration: none;">Home</a>
         <span class="mx-2">/</span>
-        <a href="/reports" class="hover:text-white">INTEL ARCHIVE</a>
+        <a href="/research" style="color: var(--text-secondary); text-decoration: none;">Research</a>
         <span class="mx-2">/</span>
-        <span class="text-[var(--signal-blue)]">REPORT #<?= $report['id'] ?></span>
+        <span style="color: var(--brand-primary);"><?= htmlspecialchars(substr($report['title'], 0, 50)) ?>...</span>
     </nav>
 
     <!-- NewsArticle Schema (GEO Optimized) -->
@@ -21,7 +21,7 @@
       "dateModified": "<?= date('c', strtotime($report['published_at'])) ?>",
       "author": [{
           "@type": "Organization",
-          "name": "China Watch Intelligence",
+          "name": "China Watch",
           "url": "https://chinawatch.blog"
       }],
       "publisher": {
@@ -33,14 +33,14 @@
           }
       },
       "description": "<?= addslashes(strip_tags($report['summary'])) ?>",
-      "articleSection": "Intelligence",
+      "articleSection": "Research",
       "speakable": {
         "@type": "SpeakableSpecification",
         "cssSelector": [".report-content h1", ".report-content h2", ".report-content p:first-of-type"]
       },
       "mainEntityOfPage": {
         "@type": "WebPage",
-        "@id": "https://chinawatch.blog/reports/<?= $report['slug'] ?>"
+        "@id": "https://chinawatch.blog/research/<?= $report['slug'] ?>"
       }
     }
     </script>
@@ -60,35 +60,34 @@
         {
           "@type": "ListItem",
           "position": 2,
-          "name": "Intelligence Archive",
-          "item": "https://chinawatch.blog/reports"
+          "name": "Research",
+          "item": "https://chinawatch.blog/research"
         },
         {
           "@type": "ListItem",
           "position": 3,
           "name": "<?= addslashes($report['title']) ?>",
-          "item": "https://chinawatch.blog/reports/<?= $report['slug'] ?>"
+          "item": "https://chinawatch.blog/research/<?= $report['slug'] ?>"
         }
       ]
     }
     </script>
 
-    <article class="prose prose-invert lg:prose-xl">
-        <header class="mb-10 border-b border-[var(--border-subtle)] pb-8">
-            <div class="flex items-center gap-4 text-xs font-mono text-[var(--signal-blue)] mb-4">
-                <span>// CLASSIFIED: PUBLIC</span>
+    <article class="prose lg:prose-xl">
+        <header class="mb-10 border-b pb-8" style="border-color: var(--border-light);">
+            <div class="flex items-center gap-4 text-sm mb-4" style="color: var(--text-muted);">
                 <time datetime="<?= date('c', strtotime($report['published_at'])) ?>">
-                    <?= date('Y-m-d H:i', strtotime($report['published_at'])) ?>
+                    <?= date('F j, Y', strtotime($report['published_at'])) ?>
                 </time>
-                <span><?= $reading_time ?? 5 ?> MIN READ</span>
-                <span>VIEWS: <?= $report['views'] ?></span>
+                <span><?= $reading_time ?? 5 ?> min read</span>
+                <span><?= number_format($report['views']) ?> views</span>
             </div>
 
-            <h1 class="text-4xl md:text-5xl font-bold font-ui mb-6 leading-tight tracking-tight">
+            <h1 class="text-4xl md:text-5xl font-headline mb-6 leading-tight tracking-tight" style="color: var(--text-primary);">
                 <?= $report['title'] ?>
             </h1>
 
-            <p class="text-xl text-[var(--text-secondary)] leading-relaxed font-serif italic">
+            <p class="text-xl leading-relaxed" style="color: var(--text-secondary); font-style: italic;">
                 <?= $report['summary'] ?>
             </p>
         </header>
@@ -114,62 +113,64 @@
         </figure>
         <?php endif; ?>
 
-        <div class="report-content text-gray-300 leading-8 font-ui text-lg">
+        <div class="report-content text-lg" style="color: var(--text-body); line-height: 1.8;">
             <?= $report['content'] ?>
         </div>
 
-        <footer class="mt-12 pt-8 border-t border-[var(--border-subtle)]">
+        <footer class="mt-12 pt-8" style="border-top: 1px solid var(--border-light);">
             <div class="flex flex-wrap gap-2">
                 <?php
                 $tags = json_decode($report['tags'], true) ?? [];
                 foreach ($tags as $tag): ?>
-                    <a href="/tag/<?= urlencode(strtolower($tag)) ?>"
-                        class="px-3 py-1 bg-[var(--bg-surface)] border border-[var(--border-subtle)] text-xs font-mono rounded-full hover:border-[var(--signal-blue)] hover:text-[var(--signal-blue)] transition-colors">
-                        #<?= strtoupper(htmlspecialchars($tag)) ?>
+                    <a href="/topics?q=<?= urlencode($tag) ?>"
+                        class="px-3 py-1 text-xs rounded-full transition-colors"
+                        style="background: var(--bg-light); border: 1px solid var(--border-light); color: var(--text-secondary);">
+                        <?= htmlspecialchars($tag) ?>
                     </a>
                 <?php endforeach; ?>
             </div>
         </footer>
 
-        <!-- Data Sources Section (GEO Optimization) -->
-        <section class="data-provenance mt-8 pt-8 border-t border-[var(--border-subtle)]">
-            <h3 class="font-mono text-sm text-[var(--text-secondary)] mb-4">// DATA PROVENANCE</h3>
-            <div class="bg-[var(--bg-surface)] rounded-lg p-5 text-sm space-y-3">
+        <!-- Data Sources Section -->
+        <section class="data-provenance mt-8 pt-8" style="border-top: 1px solid var(--border-light);">
+            <h3 class="text-sm mb-4" style="color: var(--text-secondary); font-weight: 600;">Sources & Methodology</h3>
+            <div class="rounded-lg p-5 text-sm space-y-3" style="background: var(--bg-light);">
                 <?php if (!empty($report['source_url'])): ?>
                     <p class="flex items-start gap-2">
-                        <span class="text-[var(--signal-blue)] font-mono">PRIMARY SOURCE:</span>
+                        <span style="color: var(--brand-primary); font-weight: 600;">Primary Source:</span>
                         <a href="<?= htmlspecialchars($report['source_url']) ?>" target="_blank" rel="noopener noreferrer"
-                            class="text-[var(--text-secondary)] hover:text-[var(--signal-blue)] hover:underline break-all">
+                            style="color: var(--text-secondary);" class="hover:underline break-all">
                             <?= parse_url($report['source_url'], PHP_URL_HOST) ?? 'External Source' ?>
                         </a>
                     </p>
                 <?php endif; ?>
 
                 <p class="flex items-start gap-2">
-                    <span class="text-[var(--signal-blue)] font-mono">PUBLISHED:</span>
+                    <span style="color: var(--brand-primary); font-weight: 600;">Published:</span>
                     <time datetime="<?= date('c', strtotime($report['published_at'])) ?>"
-                        class="text-[var(--text-secondary)]">
-                        <?= date('F j, Y \a\t H:i', strtotime($report['published_at'])) ?> UTC
+                        style="color: var(--text-secondary);">
+                        <?= date('F j, Y', strtotime($report['published_at'])) ?>
                     </time>
                 </p>
                 <p class="flex items-start gap-2">
-                    <span class="text-[var(--signal-blue)] font-mono">CLASSIFICATION:</span>
-                    <span class="text-[var(--text-secondary)]">PUBLIC // OPEN SOURCE INTELLIGENCE</span>
+                    <span style="color: var(--brand-primary); font-weight: 600;">Classification:</span>
+                    <span style="color: var(--text-secondary);">Open Source Research</span>
                 </p>
             </div>
         </section>
 
         <?php if (!empty($related_reports)): ?>
-            <div class="mt-16 pt-8 border-t border-[var(--border-subtle)]">
-                <h3 class="font-mono text-[var(--signal-amber)] text-sm mb-6">// RELATED INTELLIGENCE</h3>
+            <div class="mt-16 pt-8" style="border-top: 1px solid var(--border-light);">
+                <h3 class="text-sm mb-6" style="color: var(--text-secondary); font-weight: 600;">Related Research</h3>
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
                     <?php foreach ($related_reports as $related): ?>
-                        <a href="/reports/<?= $related['slug'] ?>"
-                            class="group block p-4 rounded-lg bg-[var(--bg-surface)] hover:bg-[var(--bg-glass)] transition-all border border-transparent hover:border-[var(--border-subtle)]">
-                            <span
-                                class="text-xs font-mono text-[var(--text-muted)] mb-2 block"><?= date('M d, Y', strtotime($related['published_at'])) ?></span>
-                            <h4
-                                class="text-white group-hover:text-[var(--signal-blue)] font-bold leading-tight transition-colors">
+                        <a href="/research/<?= $related['slug'] ?>"
+                            class="group block p-4 rounded-lg transition-all"
+                            style="background: var(--bg-light); border: 1px solid var(--border-light);">
+                            <span class="text-xs mb-2 block" style="color: var(--text-muted);">
+                                <?= date('M d, Y', strtotime($related['published_at'])) ?>
+                            </span>
+                            <h4 class="font-bold leading-tight" style="color: var(--text-primary);">
                                 <?= $related['title'] ?>
                             </h4>
                         </a>
@@ -194,6 +195,7 @@
         font-weight: 700;
         margin-top: 2.5rem;
         margin-bottom: 1rem;
+        font-family: var(--font-headline);
     }
 
     .report-content h3 {
@@ -215,21 +217,21 @@
         color: var(--text-body);
     }
 
-    /* Fix Tailwind-style arbitrary values */
-    .text-\[var\(--signal-blue\)\] { color: var(--brand-primary); }
-    .text-\[var\(--signal-amber\)\] { color: #D97706; }
-    .text-\[var\(--text-secondary\)\] { color: var(--text-secondary); }
-    .text-\[var\(--text-muted\)\] { color: var(--text-muted); }
-    .border-\[var\(--border-subtle\)\] { border-color: var(--border-light); }
-    .bg-\[var\(--bg-surface\)\] { background: var(--bg-light); }
-    .bg-\[var\(--bg-glass\)\] { background: var(--bg-white); }
-    .hover\:text-\[var\(--signal-blue\)\]:hover { color: var(--brand-primary); }
-    .hover\:border-\[var\(--signal-blue\)\]:hover { border-color: var(--brand-primary); }
-    .hover\:text-white:hover { color: var(--text-primary); }
+    .report-content a {
+        color: var(--brand-primary);
+        text-decoration: underline;
+    }
 
-    /* Article header and text fixes */
-    .report-container h1 { color: var(--text-primary); }
-    .report-container .text-gray-300 { color: var(--text-body); }
-    .report-container nav a { color: var(--text-secondary); }
-    .report-container nav a:hover { color: var(--brand-primary); }
+    .report-content a:hover {
+        opacity: 0.8;
+    }
+
+    /* Related research hover */
+    .group:hover {
+        border-color: var(--brand-primary) !important;
+    }
+
+    .group:hover h4 {
+        color: var(--brand-primary) !important;
+    }
 </style>

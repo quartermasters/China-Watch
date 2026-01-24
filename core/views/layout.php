@@ -128,13 +128,13 @@
     if ($uri !== '/' && substr($uri, -1) === '/')
         $uri = substr($uri, 0, -1); // Normalize trailing slash
     
-    // We want full width for: /reports/slug, /entity/id, AND Static Pages (About, Contact, Methodology)
-    $static_pages = ['/about', '/contact', '/methodology', '/privacy', '/terms'];
+    // We want full width for: /research/slug, /topic/id, AND Static Pages (About, Contact, Methodology)
+    $static_pages = ['/about', '/contact', '/methodology', '/privacy', '/terms', '/data'];
     $is_static_page = in_array($uri, $static_pages);
 
-    // Detect Reading Mode (Single Report or Entity Detail)
-    $is_report_detail = (strpos($uri, '/reports/') === 0 && $uri !== '/reports');
-    $is_entity_detail = (strpos($uri, '/entity/') === 0);
+    // Detect Reading Mode (Single Research article or Topic Detail)
+    $is_report_detail = (strpos($uri, '/research/') === 0 && $uri !== '/research');
+    $is_entity_detail = (strpos($uri, '/topic/') === 0);
 
     // Apply Reading Mode class if any of the above are true
     $reading_mode_class = ($is_report_detail || $is_entity_detail || $is_static_page) ? 'layout-reading' : '';
@@ -182,39 +182,8 @@
         <!-- Main Content -->
         <?= $content ?>
 
-        <!-- Ticker (Hide in Reading Mode) -->
-        <?php if (!$is_report_detail && !$is_entity_detail && !$is_static_page): ?>
-            <aside class="ticker-panel">
-                <h3 class="font-mono" style="margin-top:0; color:var(--text-secondary)">// LIVE REPORTS</h3>
-                <ul id="ticker-feed" class="ticker-list" hx-get="/api/ticker" hx-trigger="load, every 30s">
-                    <!-- HTMX will load list items here -->
-                    <li class="font-mono text-amber">Loading stream...</li>
-                </ul>
-            </aside>
-        <?php endif; ?>
     </div>
 
-    <!-- AI Analyst Widget -->
-    <div id="ai-widget"
-        style="position:fixed; bottom:20px; right:20px; width:350px; background:var(--bg-surface); border:1px solid var(--signal-blue); border-radius:12px; overflow:hidden; z-index:100;">
-        <div class="chat-header"
-            style="background:var(--signal-blue); padding:10px; font-family:var(--font-mono); font-weight:bold; cursor:pointer;"
-            onclick="const body = document.getElementById('chat-body'); body.style.display = (body.style.display === 'none') ? 'flex' : 'none';">
-            // CHINA WATCH ANALYST
-        </div>
-        <div id="chat-body" style="display:none; height:300px; flex-direction:column;">
-            <div id="chat-history" style="flex:1; padding:10px; overflow-y:auto; font-size:0.9rem;">
-                <div class="message bot" style="color:var(--signal-blue)">System Online. Awaiting query.</div>
-            </div>
-            <form hx-post="/api/chat" hx-target="#chat-history" hx-swap="beforeend" hx-on::after-request="this.reset()"
-                style="display:flex; border-top:1px solid var(--border-subtle);">
-                <input type="text" name="question" placeholder="Ask about China's economy..." autocomplete="off"
-                    style="flex:1; background:var(--bg-void); color:white; border:none; padding:10px; outline:none;">
-                <button type="submit"
-                    style="background:var(--bg-surface); color:var(--signal-blue); border:none; padding:0 15px; cursor:pointer;">></button>
-            </form>
-        </div>
-    </div>
 
     <!-- Footer -->
     <footer class="app-footer">

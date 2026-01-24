@@ -29,23 +29,43 @@ class DashboardController
         ]);
     }
 
+    public function dataCenter(): void
+    {
+        // Data Center - Economic indicators and metrics
+        $signals = [
+            'gdp_growth' => ['value' => '4.7%', 'trend' => -0.2, 'label' => 'GDP Growth (YoY)'],
+            'yuan_usd' => ['value' => '7.24', 'trend' => 0.5, 'label' => 'Yuan/USD'],
+            'trade_volume' => ['value' => '$583B', 'trend' => -3.1, 'label' => 'Monthly Trade Volume'],
+            'pmi' => ['value' => '49.8', 'trend' => -0.3, 'label' => 'Manufacturing PMI'],
+            'cpi' => ['value' => '0.3%', 'trend' => 0.1, 'label' => 'CPI (YoY)'],
+            'foreign_reserves' => ['value' => '$3.2T', 'trend' => 0.8, 'label' => 'Foreign Reserves']
+        ];
+
+        View::render('data_center', [
+            'signals' => $signals,
+            'page_title' => 'Data Center - China Watch',
+            'meta_description' => 'Real-time economic indicators and data on China including GDP, trade, currency, and key policy metrics.',
+            'canonical_url' => 'https://chinawatch.blog/data'
+        ]);
+    }
+
     public function ticker(): void
     {
         // HTMX Polling Endpoint - FETCH LATEST REPORTS
         $reports = DB::query("SELECT id, title, slug, published_at FROM reports ORDER BY published_at DESC LIMIT 5");
 
         if (empty($reports)) {
-            echo "<li class='text-[var(--text-muted)] font-mono text-sm'>No active reports.</li>";
+            echo "<li style='color: var(--text-muted);'>No active reports.</li>";
             exit;
         }
 
         foreach ($reports as $r) {
-            $date = date('H:i', strtotime($r['published_at']));
-            $color = 'text-[var(--text-secondary)]';
+            $date = date('M d', strtotime($r['published_at']));
 
-            echo "<li class='{$color} font-mono text-xs cursor-pointer hover:bg-white/5 p-2 transition-colors border-b border-[var(--border-subtle)]'>
-                <a href='/reports/{$r['slug']}' class='block hover:text-[var(--signal-blue)]' style='text-decoration:none; color:inherit;'>
-                    <span class='text-[var(--signal-blue)]'>[{$date}]</span> {$r['title']}
+            echo "<li style='padding: 0.5rem; border-bottom: 1px solid var(--border-light);'>
+                <a href='/research/{$r['slug']}' style='text-decoration:none; color: var(--text-primary);'>
+                    <span style='color: var(--text-muted); font-size: 0.75rem;'>{$date}</span>
+                    <span style='display: block;'>{$r['title']}</span>
                 </a>
             </li>";
         }

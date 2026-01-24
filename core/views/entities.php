@@ -1,17 +1,17 @@
 <main class="page-container" style="max-width: 1200px; margin: 0 auto; padding: 2rem;">
 
-    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 2rem;">
+    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 2rem; flex-wrap: wrap; gap: 1rem;">
         <div>
-            <h1 class="font-mono text-xl" style="color: var(--text-primary);">// KNOWLEDGE GRAPH</h1>
-            <p style="color: var(--text-muted);">Tracked entities extracted from intelligence reports.</p>
+            <h1 class="font-headline text-3xl" style="color: var(--text-primary);">Topics & Issue Areas</h1>
+            <p style="color: var(--text-muted);">Explore our research by subject area, organization, and key figures.</p>
         </div>
 
-        <form action="/entities" method="GET" style="display:flex;">
-            <input type="text" name="q" value="<?= htmlspecialchars($search_query) ?>" placeholder="Search entities..."
+        <form action="/topics" method="GET" style="display:flex;">
+            <input type="text" name="q" value="<?= htmlspecialchars($search_query) ?>" placeholder="Search topics..."
                 style="background: var(--bg-light); border: 1px solid var(--border-light); color: var(--text-body); padding: 0.5rem 1rem; border-radius: 4px; outline:none;">
             <button type="submit"
-                style="background: var(--signal-blue); color: white; border: none; padding: 0.5rem 1rem; margin-left: 0.5rem; border-radius: 4px; cursor: pointer;">
-                FILTER
+                style="background: var(--brand-primary); color: white; border: none; padding: 0.5rem 1rem; margin-left: 0.5rem; border-radius: 4px; cursor: pointer;">
+                Search
             </button>
         </form>
     </div>
@@ -20,21 +20,21 @@
 
         <!-- Organizations -->
         <section>
-            <h2 class="font-mono text-lg text-secondary"
-                style="border-bottom: 1px solid var(--border-color); padding-bottom: 0.5rem; margin-bottom: 1rem;">
-                ORGANIZATIONS
+            <h2 class="font-headline text-xl"
+                style="border-bottom: 2px solid var(--brand-primary); padding-bottom: 0.5rem; margin-bottom: 1rem; color: var(--text-primary);">
+                Organizations
             </h2>
             <div class="entity-list">
                 <?php if (empty($grouped_entities['ORG'])): ?>
                     <p style="color: var(--text-muted); font-style: italic;">No organizations found.</p>
                 <?php else: ?>
                     <?php foreach ($grouped_entities['ORG'] as $ent): ?>
-                        <a href="/entity/<?= $ent['id'] ?>" class="entity-card">
+                        <a href="/topic/<?= $ent['id'] ?>" class="entity-card">
                             <span class="name">
                                 <?= htmlspecialchars($ent['name']) ?>
                             </span>
                             <span class="badge">
-                                <?= $ent['report_count'] ?>
+                                <?= $ent['report_count'] ?> articles
                             </span>
                         </a>
                     <?php endforeach; ?>
@@ -44,21 +44,21 @@
 
         <!-- People -->
         <section>
-            <h2 class="font-mono text-lg text-secondary"
-                style="border-bottom: 1px solid var(--border-color); padding-bottom: 0.5rem; margin-bottom: 1rem;">
-                KEY FIGURES
+            <h2 class="font-headline text-xl"
+                style="border-bottom: 2px solid var(--brand-primary); padding-bottom: 0.5rem; margin-bottom: 1rem; color: var(--text-primary);">
+                Key Figures
             </h2>
             <div class="entity-list">
                 <?php if (empty($grouped_entities['PERSON'])): ?>
                     <p style="color: var(--text-muted); font-style: italic;">No key figures found.</p>
                 <?php else: ?>
                     <?php foreach ($grouped_entities['PERSON'] as $ent): ?>
-                        <a href="/entity/<?= $ent['id'] ?>" class="entity-card">
+                        <a href="/topic/<?= $ent['id'] ?>" class="entity-card">
                             <span class="name">
                                 <?= htmlspecialchars($ent['name']) ?>
                             </span>
                             <span class="badge">
-                                <?= $ent['report_count'] ?>
+                                <?= $ent['report_count'] ?> articles
                             </span>
                         </a>
                     <?php endforeach; ?>
@@ -68,21 +68,21 @@
 
         <!-- Locations -->
         <section>
-            <h2 class="font-mono text-lg text-secondary"
-                style="border-bottom: 1px solid var(--border-color); padding-bottom: 0.5rem; margin-bottom: 1rem;">
-                LOCATIONS
+            <h2 class="font-headline text-xl"
+                style="border-bottom: 2px solid var(--brand-primary); padding-bottom: 0.5rem; margin-bottom: 1rem; color: var(--text-primary);">
+                Locations
             </h2>
             <div class="entity-list">
                 <?php if (empty($grouped_entities['GPE'])): ?>
                     <p style="color: var(--text-muted); font-style: italic;">No locations found.</p>
                 <?php else: ?>
                     <?php foreach ($grouped_entities['GPE'] as $ent): ?>
-                        <a href="/entity/<?= $ent['id'] ?>" class="entity-card">
+                        <a href="/topic/<?= $ent['id'] ?>" class="entity-card">
                             <span class="name">
                                 <?= htmlspecialchars($ent['name']) ?>
                             </span>
                             <span class="badge">
-                                <?= $ent['report_count'] ?>
+                                <?= $ent['report_count'] ?> articles
                             </span>
                         </a>
                     <?php endforeach; ?>
@@ -128,9 +128,8 @@
     .entity-card .badge {
         background: var(--bg-light);
         color: var(--text-muted);
-        font-size: 0.8rem;
-        padding: 2px 8px;
+        font-size: 0.75rem;
+        padding: 2px 10px;
         border-radius: 12px;
-        font-family: var(--font-mono);
     }
 </style>
