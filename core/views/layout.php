@@ -143,42 +143,36 @@
         <!-- Header -->
         <header class="header">
             <div class="logo">
-                <a href="/" style="text-decoration:none; color:inherit; display:flex; align-items:center; gap:8px;">
-                    <div
-                        style="width:12px; height:12px; background:var(--signal-red); border-radius:50%; box-shadow: 0 0 10px var(--signal-red);">
-                    </div>
-                    China Watch <span style="opacity:0.5; font-weight:400; font-family:var(--font-ui);">// INTEL</span>
+                <a href="/" style="text-decoration:none; color:inherit; display:flex; align-items:center; gap:10px;">
+                    <span style="font-family: var(--font-headline); font-size: 1.25rem; font-weight: 700; color: var(--text-primary);">
+                        China<span style="color: var(--brand-primary);">Watch</span>
+                    </span>
                 </a>
             </div>
 
             <!-- Mobile Menu Button -->
-            <button id="menu-toggle" class="font-mono text-secondary"
-                style="background:none; border:none; font-size:1.5rem; cursor:pointer; display:none;"
-                aria-label="Toggle Navigation Menu">
-                ☰
+            <button id="menu-toggle" class="menu-toggle" aria-label="Toggle Navigation Menu">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <line x1="3" y1="6" x2="21" y2="6"></line>
+                    <line x1="3" y1="12" x2="21" y2="12"></line>
+                    <line x1="3" y1="18" x2="21" y2="18"></line>
+                </svg>
             </button>
             <script>
-                // Simple Mobile Menu Logic
                 document.getElementById('menu-toggle').addEventListener('click', () => {
                     document.querySelector('.main-nav').classList.toggle('open');
                 });
-                // Show button only on mobile via JS check or CSS media query
-                if (window.innerWidth <= 1024) {
-                    document.getElementById('menu-toggle').style.display = 'block';
-                }
             </script>
 
             <nav class="main-nav">
-                <a href="/" class="nav-link <?= $uri === '/' ? 'active' : '' ?>">DASHBOARD</a>
-                <a href="/reports" class="nav-link <?= strpos($uri, '/reports') === 0 ? 'active' : '' ?>">REPORTS</a>
-                <a href="/entities" class="nav-link <?= strpos($uri, '/entit') === 0 ? 'active' : '' ?>">ENTITIES</a>
-
-                <a href="/about" class="nav-link">About</a>
-                <a href="/contact" class="nav-link">Contact</a>
+                <a href="/research" class="nav-link <?= strpos($uri, '/research') === 0 ? 'active' : '' ?>">Research</a>
+                <a href="/topics" class="nav-link <?= strpos($uri, '/topic') === 0 ? 'active' : '' ?>">Topics</a>
+                <a href="/data" class="nav-link <?= $uri === '/data' ? 'active' : '' ?>">Data</a>
+                <a href="/about" class="nav-link <?= strpos($uri, '/about') === 0 ? 'active' : '' ?>">About</a>
             </nav>
 
-            <div class="status-indicator">
-                <span class="font-mono text-green">● SYSTEM OPTIMAL</span>
+            <div class="header-cta hide-mobile">
+                <a href="/contact" class="btn btn-primary" style="padding: 0.5rem 1rem; font-size: 0.875rem;">Subscribe</a>
             </div>
         </header>
 

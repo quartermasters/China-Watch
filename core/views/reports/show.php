@@ -185,10 +185,11 @@
     /* Typography Overrides for Article Readability */
     .report-content p {
         margin-bottom: 1.5rem;
+        color: var(--text-body);
     }
 
     .report-content h2 {
-        color: white;
+        color: var(--text-primary);
         font-size: 1.8rem;
         font-weight: 700;
         margin-top: 2.5rem;
@@ -196,7 +197,7 @@
     }
 
     .report-content h3 {
-        color: var(--text-secondary);
+        color: var(--text-primary);
         font-size: 1.4rem;
         font-weight: 600;
         margin-top: 2rem;
@@ -211,5 +212,24 @@
 
     .report-content li {
         margin-bottom: 0.5rem;
+        color: var(--text-body);
     }
+
+    /* Fix Tailwind-style arbitrary values */
+    .text-\[var\(--signal-blue\)\] { color: var(--brand-primary); }
+    .text-\[var\(--signal-amber\)\] { color: #D97706; }
+    .text-\[var\(--text-secondary\)\] { color: var(--text-secondary); }
+    .text-\[var\(--text-muted\)\] { color: var(--text-muted); }
+    .border-\[var\(--border-subtle\)\] { border-color: var(--border-light); }
+    .bg-\[var\(--bg-surface\)\] { background: var(--bg-light); }
+    .bg-\[var\(--bg-glass\)\] { background: var(--bg-white); }
+    .hover\:text-\[var\(--signal-blue\)\]:hover { color: var(--brand-primary); }
+    .hover\:border-\[var\(--signal-blue\)\]:hover { border-color: var(--brand-primary); }
+    .hover\:text-white:hover { color: var(--text-primary); }
+
+    /* Article header and text fixes */
+    .report-container h1 { color: var(--text-primary); }
+    .report-container .text-gray-300 { color: var(--text-body); }
+    .report-container nav a { color: var(--text-secondary); }
+    .report-container nav a:hover { color: var(--brand-primary); }
 </style>

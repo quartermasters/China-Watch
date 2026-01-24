@@ -8,7 +8,7 @@
 
         <form action="/entities" method="GET" style="display:flex;">
             <input type="text" name="q" value="<?= htmlspecialchars($search_query) ?>" placeholder="Search entities..."
-                style="background: var(--bg-surface); border: 1px solid var(--border-color); color: white; padding: 0.5rem 1rem; border-radius: 4px; outline:none;">
+                style="background: var(--bg-light); border: 1px solid var(--border-light); color: var(--text-body); padding: 0.5rem 1rem; border-radius: 4px; outline:none;">
             <button type="submit"
                 style="background: var(--signal-blue); color: white; border: none; padding: 0.5rem 1rem; margin-left: 0.5rem; border-radius: 4px; cursor: pointer;">
                 FILTER
@@ -105,27 +105,28 @@
         display: flex;
         justify-content: space-between;
         align-items: center;
-        background: var(--bg-surface);
+        background: var(--bg-white);
         padding: 0.75rem 1rem;
         border-radius: 6px;
-        border: 1px solid var(--border-subtle);
+        border: 1px solid var(--border-light);
         color: var(--text-primary);
         text-decoration: none;
         transition: all 0.2s ease;
     }
 
     .entity-card:hover {
-        border-color: var(--signal-blue);
+        border-color: var(--brand-primary);
         transform: translateX(4px);
-        background: var(--bg-card-hover);
+        background: var(--bg-light);
     }
 
     .entity-card .name {
         font-weight: 500;
+        color: var(--text-primary);
     }
 
     .entity-card .badge {
-        background: rgba(255, 255, 255, 0.1);
+        background: var(--bg-light);
         color: var(--text-muted);
         font-size: 0.8rem;
         padding: 2px 8px;

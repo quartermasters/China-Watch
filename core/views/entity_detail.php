@@ -63,14 +63,15 @@
 
 <style>
     .entity-header {
-        background: var(--bg-surface);
+        background: var(--bg-white);
         padding: 2rem;
         border-radius: 8px;
-        border: 1px solid var(--border-color);
+        border: 1px solid var(--border-light);
+        box-shadow: var(--shadow-card);
     }
 
     .type-tag {
-        background: var(--signal-blue);
+        background: var(--brand-primary);
         color: white;
         padding: 4px 8px;
         border-radius: 4px;
@@ -82,7 +83,7 @@
     .title {
         font-size: 2.5rem;
         margin: 1rem 0 0.5rem 0;
-        color: white;
+        color: var(--text-primary);
     }
 
     .meta {
@@ -94,7 +95,7 @@
     /* Timeline */
     .timeline {
         position: relative;
-        border-left: 2px solid var(--border-subtle);
+        border-left: 2px solid var(--border-light);
         padding-left: 2rem;
     }
 
@@ -110,13 +111,13 @@
         top: 0.5rem;
         width: 1rem;
         height: 1rem;
-        background: var(--bg-void);
-        border: 2px solid var(--signal-blue);
+        background: var(--bg-white);
+        border: 2px solid var(--brand-primary);
         border-radius: 50%;
     }
 
     .date {
-        color: var(--signal-blue);
+        color: var(--brand-primary);
         font-weight: bold;
         margin-bottom: 0.5rem;
     }
@@ -128,7 +129,7 @@
     }
 
     .report-title a:hover {
-        color: var(--signal-blue);
+        color: var(--brand-primary);
     }
 
     .summary {
