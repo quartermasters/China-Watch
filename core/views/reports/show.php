@@ -15,7 +15,7 @@
       "@type": "NewsArticle",
       "headline": "<?= addslashes($report['title']) ?>",
       "image": [
-        "https://chinawatch.blog/public/assets/og-default.jpg"
+        "<?= !empty($report['featured_image']) ? htmlspecialchars($report['featured_image']) : 'https://chinawatch.blog/public/assets/og-default.jpg' ?>"
       ],
       "datePublished": "<?= date('c', strtotime($report['published_at'])) ?>",
       "dateModified": "<?= date('c', strtotime($report['published_at'])) ?>",
@@ -92,6 +92,27 @@
                 <?= $report['summary'] ?>
             </p>
         </header>
+
+        <?php if (!empty($report['featured_image'])):
+            // Smart crop with face detection via Cloudinary
+            $cloudName = defined('CLOUDINARY_CLOUD_NAME') ? CLOUDINARY_CLOUD_NAME : null;
+            $originalImage = $report['featured_image'];
+
+            if ($cloudName && !str_contains($originalImage, 'cloudinary.com')) {
+                // Wrap in Cloudinary fetch URL with face detection
+                $smartImage = "https://res.cloudinary.com/{$cloudName}/image/fetch/c_fill,g_face,w_1200,h_675,q_auto,f_auto/" . urlencode($originalImage);
+            } else {
+                $smartImage = $originalImage;
+            }
+        ?>
+        <figure class="featured-image mb-10 -mx-4 md:-mx-8 overflow-hidden rounded-lg">
+            <img src="<?= htmlspecialchars($smartImage) ?>"
+                 alt="<?= htmlspecialchars($report['title']) ?>"
+                 style="width: 100%; height: auto; max-height: 450px; object-fit: cover;"
+                 loading="lazy"
+                 onerror="this.src='<?= htmlspecialchars($originalImage) ?>'; this.style.objectPosition='top';">
+        </figure>
+        <?php endif; ?>
 
         <div class="report-content text-gray-300 leading-8 font-ui text-lg">
             <?= $report['content'] ?>

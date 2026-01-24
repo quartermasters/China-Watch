@@ -11,6 +11,15 @@ define('DB_PASS', 'YourStrongPassword123!');
 // API Keys (Injected)
 define('GOOGLE_MAPS_KEY', 'YOUR_GOOGLE_MAPS_KEY');
 define('OPENAI_API_KEY', 'YOUR_OPENAI_API_KEY');
+define('SERPAPI_KEY', 'bfd194826c78c58b8858ca8f545491b08ed1ed20262c5a2d8ccc77e7c7eb5d5b'); // 250 searches/month
+define('PERPLEXITY_API_KEY', 'YOUR_PERPLEXITY_API_KEY_HERE'); // Sonar API
+
+// Cloudinary (Smart Image Cropping with Face Detection)
+// Sign up free at: https://cloudinary.com
+// Find credentials at: Dashboard > Account Details
+define('CLOUDINARY_CLOUD_NAME', 'your_cloud_name');  // e.g., 'dxyz123abc'
+define('CLOUDINARY_API_KEY', 'YOUR_CLOUDINARY_API_KEY');  // e.g., '123456789012345'
+define('CLOUDINARY_API_SECRET', 'YOUR_CLOUDINARY_API_SECRET');  // e.g., 'AbCdEfGhIjKlMnOpQrStUvWxYz'
 
 // System Configuration
 define('SITE_NAME', 'China Watch');
