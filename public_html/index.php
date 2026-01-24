@@ -19,15 +19,15 @@ $router = new Router();
 // Homepage
 $router->get('/', [DashboardController::class, 'index']);
 
-// RESEARCH (Publications) - New primary URL
+// RESEARCH (Publications)
 $router->get('/research', [\RedPulse\Controllers\ReportController::class, 'index']);
-$router->get('/research/{slug}', [\RedPulse\Controllers\ReportController::class, 'show']);
+// Note: /research/{slug} handled in Router::dispatch()
 
-// TOPICS (Issue Areas) - Replaces Entities
+// TOPICS (Issue Areas)
 $router->get('/topics', [\RedPulse\Controllers\EntitiesController::class, 'index']);
-$router->get('/topic/{id}', [\RedPulse\Controllers\EntitiesController::class, 'show']);
+// Note: /topic/{id} handled in Router::dispatch()
 
-// DATA CENTER - Economic indicators and metrics
+// DATA CENTER
 $router->get('/data', [DashboardController::class, 'dataCenter']);
 
 // ABOUT Section
@@ -36,7 +36,7 @@ $router->get('/about/methodology', [\RedPulse\Controllers\StaticController::clas
 $router->get('/about/contact', [\RedPulse\Controllers\ContactController::class, 'index']);
 $router->post('/about/contact', [\RedPulse\Controllers\ContactController::class, 'send']);
 
-// Keep standalone URLs for footer links
+// Standalone URLs for footer links
 $router->get('/methodology', [\RedPulse\Controllers\StaticController::class, 'methodology']);
 $router->get('/privacy', [\RedPulse\Controllers\StaticController::class, 'privacy']);
 $router->get('/terms', [\RedPulse\Controllers\StaticController::class, 'terms']);
@@ -44,33 +44,15 @@ $router->get('/contact', [\RedPulse\Controllers\ContactController::class, 'index
 $router->post('/contact', [\RedPulse\Controllers\ContactController::class, 'send']);
 
 // ============================================
-// LEGACY URL REDIRECTS (SEO - 301 Redirects)
-// Keep old URLs working
+// LEGACY URL REDIRECTS
+// Handled in Router::dispatch() for 301 redirects:
+// /reports -> /research
+// /reports/{slug} -> /research/{slug}
+// /entities -> /topics
+// /entity/{id} -> /topic/{id}
+// /tags -> /topics
+// /tag/{slug} -> /topics?q={slug}
 // ============================================
-$router->get('/reports', function() {
-    header('Location: /research', true, 301);
-    exit;
-});
-$router->get('/reports/{slug}', function($slug) {
-    header('Location: /research/' . $slug, true, 301);
-    exit;
-});
-$router->get('/entities', function() {
-    header('Location: /topics', true, 301);
-    exit;
-});
-$router->get('/entity/{id}', function($id) {
-    header('Location: /topic/' . $id, true, 301);
-    exit;
-});
-$router->get('/tags', function() {
-    header('Location: /topics', true, 301);
-    exit;
-});
-$router->get('/tag/{slug}', function($slug) {
-    header('Location: /topic/' . $slug, true, 301);
-    exit;
-});
 
 // ============================================
 // SEO (Sitemaps)

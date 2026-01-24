@@ -1812,6 +1812,7 @@ h1, h2, h3, h4, h5, h6 {
 .text-\[var\(--signal-amber\)\] { color: #D97706; }
 .text-\[var\(--text-secondary\)\] { color: var(--text-secondary); }
 .text-\[var\(--text-muted\)\] { color: var(--text-muted); }
+.text-\[var\(--brand-primary\)\] { color: var(--brand-primary); }
 
 /* Tailwind arbitrary border values */
 .border-\[var\(--border-subtle\)\] { border-color: var(--border-light); }
@@ -1825,6 +1826,7 @@ h1, h2, h3, h4, h5, h6 {
 /* Tailwind hover variants */
 .hover\:text-\[var\(--signal-blue\)\]:hover { color: var(--brand-primary); }
 .hover\:text-\[var\(--signal-red\)\]:hover { color: #DC2626; }
+.hover\:text-\[var\(--brand-primary\)\]:hover { color: var(--brand-primary); }
 .hover\:border-\[var\(--signal-blue\)\]:hover { border-color: var(--brand-primary); }
 .hover\:bg-\[var\(--bg-glass\)\]:hover { background: var(--bg-white); }
 

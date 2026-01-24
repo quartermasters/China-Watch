@@ -19,24 +19,24 @@ class SitemapController
             'priority' => '1.0'
         ];
 
-        // Reports
+        // Research (Publications)
         $reports = DB::query("SELECT slug, published_at FROM reports ORDER BY published_at DESC");
         foreach ($reports as $r) {
             $urls[] = [
-                'loc' => 'https://chinawatch.blog/reports/' . $r['slug'],
+                'loc' => 'https://chinawatch.blog/research/' . $r['slug'],
                 'lastmod' => date('c', strtotime($r['published_at'])),
                 'changefreq' => 'weekly',
                 'priority' => '0.8'
             ];
         }
 
-        // Entities
+        // Topics (Issue Areas)
         $entities = DB::query("SELECT id, name, created_at FROM entities");
         foreach ($entities as $e) {
             // Check if slug exists, otherwise use ID (handling transition period)
             $slug = $e['slug'] ?? $e['id'];
             $urls[] = [
-                'loc' => 'https://chinawatch.blog/entity/' . $slug,
+                'loc' => 'https://chinawatch.blog/topic/' . $slug,
                 'lastmod' => date('c', strtotime($e['created_at'])),
                 'changefreq' => 'monthly',
                 'priority' => '0.6'
@@ -44,7 +44,7 @@ class SitemapController
         }
 
         // Static pages
-        $static = ['about', 'methodology', 'privacy', 'terms', 'contact'];
+        $static = ['about', 'methodology', 'privacy', 'terms', 'contact', 'data', 'research', 'topics'];
         foreach ($static as $page) {
             $urls[] = [
                 'loc' => 'https://chinawatch.blog/' . $page,
@@ -77,7 +77,7 @@ class SitemapController
         foreach ($reports as $r) {
             $tags = json_decode($r['tags'], true) ?? [];
             $xml .= '<url>';
-            $xml .= '<loc>https://chinawatch.blog/reports/' . $r['slug'] . '</loc>';
+            $xml .= '<loc>https://chinawatch.blog/research/' . $r['slug'] . '</loc>';
             $xml .= '<news:news>';
             $xml .= '<news:publication>';
             $xml .= '<news:name>China Watch Intelligence</news:name>';

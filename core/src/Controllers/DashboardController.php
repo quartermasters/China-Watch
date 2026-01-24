@@ -23,8 +23,8 @@ class DashboardController
 
         View::render('dashboard', [
             'signals' => $signals,
-            'page_title' => 'China Watch // Real-Time Intelligence on China',
-            'meta_description' => 'China Watch: Automated OSINT intelligence platform monitoring China\'s economy, policy, and geopolitical developments. Real-time signals from Shanghai Port, lithium markets, and regulatory activity.',
+            'page_title' => 'China Watch - Independent Research on China',
+            'meta_description' => 'China Watch: Independent research institute providing rigorous analysis on China\'s economy, policy, and geopolitical developments for policymakers, business leaders, and informed citizens.',
             'canonical_url' => 'https://chinawatch.blog/'
         ]);
     }

@@ -17,63 +17,71 @@ class Router
         $this->routes['POST'][$path] = $handler;
     }
 
-    // Static Page Helper
-    public function view(string $path, string $viewName): void
-    {
-        $this->get($path, [self::class, 'renderStatic']); // Use a generic handler
-        $this->routes['STATIC'][$path] = $viewName; // Store view mapping
-    }
-
-    public static function renderStatic(): void
-    {
-        // Simple static renderer
-        $uri = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
-        if ($uri !== '/' && substr($uri, -1) === '/')
-            $uri = substr($uri, 0, -1);
-
-        // This is a hacky way to access the router instance or just global map, 
-        // but for this simple framework, we'll just check valid views or pass arguments.
-        // Better: The dispatch logic needs to know WHICH view to render.
-        // Let's refactor dispatch slightly to support this, OR just add manual routes in index.php for simplicity.
-    }
-
     public function dispatch(): void
     {
         $uri = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
         $method = $_SERVER['REQUEST_METHOD'];
 
-        // Simple strict match for now (no regex params for MVC MVP)
-        // Stripping trailing slash
+        // Strip trailing slash
         if ($uri !== '/' && substr($uri, -1) === '/') {
             $uri = substr($uri, 0, -1);
         }
 
-        // Dynamic Route: Data Pages (e.g., /data/SHANGHAI_PORT)
-        if (preg_match('#^/data/([a-zA-Z0-9-_]+)$#', $uri, $matches)) {
-            $controller = new \RedPulse\Controllers\DataController();
-            $controller->show($matches[1]);
-            return;
+        // ============================================
+        // 301 REDIRECTS (Legacy URLs -> New URLs)
+        // ============================================
+
+        // /reports -> /research
+        if ($uri === '/reports') {
+            header('Location: /research', true, 301);
+            exit;
         }
 
-        // Dynamic Route: Anomaly Details (e.g., /api/anomaly/ANOM-123)
-        if (preg_match('#^/api/anomaly/([a-zA-Z0-9-_]+)$#', $uri, $matches)) {
-            $controller = new \RedPulse\Controllers\DashboardController();
-            $controller->anomaly_detail($matches[1]);
-            return;
-        }
-
-        // Dynamic Route: Single Report (e.g., /reports/analysis-123)
+        // /reports/{slug} -> /research/{slug}
         if (preg_match('#^/reports/([a-zA-Z0-9-_]+)$#', $uri, $matches)) {
+            header('Location: /research/' . $matches[1], true, 301);
+            exit;
+        }
+
+        // /entities -> /topics
+        if ($uri === '/entities') {
+            header('Location: /topics', true, 301);
+            exit;
+        }
+
+        // /entity/{id} -> /topic/{id}
+        if (preg_match('#^/entity/([a-zA-Z0-9-]+)$#', $uri, $matches)) {
+            header('Location: /topic/' . $matches[1], true, 301);
+            exit;
+        }
+
+        // /tags -> /topics
+        if ($uri === '/tags') {
+            header('Location: /topics', true, 301);
+            exit;
+        }
+
+        // /tag/{slug} -> /topics?q={slug}
+        if (preg_match('#^/tag/([a-zA-Z0-9-_%+]+)$#', $uri, $matches)) {
+            header('Location: /topics?q=' . $matches[1], true, 301);
+            exit;
+        }
+
+        // ============================================
+        // DYNAMIC ROUTES
+        // ============================================
+
+        // /research/{slug} - Single Research Article
+        if (preg_match('#^/research/([a-zA-Z0-9-_]+)$#', $uri, $matches)) {
             $controller = new \RedPulse\Controllers\ReportController();
             $controller->show($matches[1]);
             return;
         }
 
-        // Dynamic Route: Entity Detail - /entity/slug or /entity/123 (legacy)
-        if (preg_match('#^/entity/([a-zA-Z0-9-]+)$#', $uri, $matches)) {
+        // /topic/{id} - Topic Detail (by ID or slug)
+        if (preg_match('#^/topic/([a-zA-Z0-9-]+)$#', $uri, $matches)) {
             $controller = new \RedPulse\Controllers\EntitiesController();
             $identifier = $matches[1];
-            // Check if it's a numeric ID (legacy) or slug
             if (ctype_digit($identifier)) {
                 $controller->showById((int) $identifier);
             } else {
@@ -82,26 +90,23 @@ class Router
             return;
         }
 
-        // Static Route for Reports Archive
-        if ($uri === '/reports') {
-            $controller = new \RedPulse\Controllers\ReportController();
-            $controller->index();
-            return;
-        }
-
-        // Static Route for Tags Index
-        if ($uri === '/tags') {
-            $controller = new \RedPulse\Controllers\TagController();
-            $controller->index();
-            return;
-        }
-
-        // Dynamic Route: Tag Archive - /tag/economy
-        if (preg_match('#^/tag/([a-zA-Z0-9-_%+]+)$#', $uri, $matches)) {
-            $controller = new \RedPulse\Controllers\TagController();
+        // /data/{source} - Data Detail Page
+        if (preg_match('#^/data/([a-zA-Z0-9-_]+)$#', $uri, $matches)) {
+            $controller = new \RedPulse\Controllers\DataController();
             $controller->show($matches[1]);
             return;
         }
+
+        // /api/anomaly/{id} - Anomaly Details
+        if (preg_match('#^/api/anomaly/([a-zA-Z0-9-_]+)$#', $uri, $matches)) {
+            $controller = new \RedPulse\Controllers\DashboardController();
+            $controller->anomaly_detail($matches[1]);
+            return;
+        }
+
+        // ============================================
+        // STATIC ROUTES (from registered routes)
+        // ============================================
 
         if (isset($this->routes[$method][$uri])) {
             [$class, $function] = $this->routes[$method][$uri];
@@ -109,7 +114,7 @@ class Router
             $controller->$function();
         } else {
             http_response_code(404);
-            echo "404 - Signal Not Found";
+            echo "404 - Page Not Found";
         }
     }
 }

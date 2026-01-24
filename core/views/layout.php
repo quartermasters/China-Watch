@@ -10,7 +10,7 @@
 
     <!-- SEO Meta Tags -->
     <meta name="description"
-        content="<?= htmlspecialchars($meta_description ?? 'China Watch: Real-time intelligence on China\'s economy, policy, and geopolitics. AI-powered analysis of economic signals and regulatory changes.') ?>">
+        content="<?= htmlspecialchars($meta_description ?? 'China Watch: Independent research institute providing rigorous analysis on China\'s economy, policy, and geopolitical developments.') ?>">
     <link rel="canonical" href="<?= $canonical_url ?? 'https://chinawatch.blog' . $_SERVER['REQUEST_URI'] ?>">
 
     <!-- Language and International SEO -->
@@ -31,18 +31,18 @@
 
     <!-- Open Graph -->
     <meta property="og:type" content="<?= $og_type ?? 'website' ?>">
-    <meta property="og:title" content="<?= htmlspecialchars($page_title ?? 'China Watch // Intel') ?>">
+    <meta property="og:title" content="<?= htmlspecialchars($page_title ?? 'China Watch') ?>">
     <meta property="og:description"
-        content="<?= htmlspecialchars($meta_description ?? 'Real-time intelligence on China') ?>">
+        content="<?= htmlspecialchars($meta_description ?? 'Independent research on China\'s economy and policy') ?>">
     <meta property="og:url" content="<?= $canonical_url ?? 'https://chinawatch.blog' . $_SERVER['REQUEST_URI'] ?>">
     <meta property="og:site_name" content="China Watch">
     <meta property="og:image" content="<?= $og_image ?? 'https://chinawatch.blog/public/assets/og-default.jpg' ?>">
 
     <!-- Twitter Cards -->
     <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="<?= htmlspecialchars($page_title ?? 'China Watch // Intel') ?>">
+    <meta name="twitter:title" content="<?= htmlspecialchars($page_title ?? 'China Watch') ?>">
     <meta name="twitter:description"
-        content="<?= htmlspecialchars($meta_description ?? 'Real-time intelligence on China') ?>">
+        content="<?= htmlspecialchars($meta_description ?? 'Independent research on China\'s economy and policy') ?>">
     <meta name="twitter:image" content="<?= $og_image ?? 'https://chinawatch.blog/public/assets/og-default.jpg' ?>">
 
     <!-- Article Meta Tags (for reports/articles) -->
@@ -88,7 +88,7 @@
       "legalName": "Distributed Intelligence Node",
       "url": "https://chinawatch.blog",
       "logo": "https://chinawatch.blog/public/assets/logo.png",
-      "description": "Real-time intelligence platform monitoring China's economy, policy, and geopolitical developments.",
+      "description": "Independent research institute providing analysis on China's economy, policy, and geopolitical developments.",
       "sameAs": [
         "https://twitter.com/chinawatch"
       ]
@@ -103,7 +103,7 @@
       "name": "China Watch",
       "alternateName": "China Watch Intelligence",
       "url": "https://chinawatch.blog",
-      "description": "Real-time intelligence on China's economy, policy, and geopolitical developments. AI-powered OSINT analysis.",
+      "description": "Independent research on China's economy, policy, and geopolitical developments.",
       "publisher": {
         "@type": "Organization",
         "name": "China Watch",
@@ -113,7 +113,7 @@
         "@type": "SearchAction",
         "target": {
           "@type": "EntryPoint",
-          "urlTemplate": "https://chinawatch.blog/entities?q={search_term_string}"
+          "urlTemplate": "https://chinawatch.blog/topics?q={search_term_string}"
         },
         "query-input": "required name=search_term_string"
       }

@@ -1,33 +1,68 @@
 <?php
-$page_title = 'Privacy Protocol // China Watch';
+$page_title = 'Privacy Policy - China Watch';
 ?>
-<div class="col-span-1 fade-in">
+<main class="page-container" style="max-width: 800px; margin: 0 auto; padding: 2rem;">
 
-    <div class="tile p-8 font-mono text-sm leading-relaxed">
-        <h1 class="text-2xl uppercase text-white mb-8 border-b border-gray-800 pb-4">Privacy Protocol [v2.0]</h1>
+    <h1 class="font-headline text-4xl mb-2" style="color: var(--text-primary);">Privacy Policy</h1>
+    <p style="color: var(--text-muted); margin-bottom: 2rem;">Last updated: January 2026</p>
 
-        <h3 class="text-green-500 mb-2">01. DATA COLLECTION</h3>
-        <p class="text-gray-400 mb-6">
-            We minimize surveillance. We collect only what is necessary for server security: IP Address, User-Agent, and
-            Request Timestamp.
-            This data is retained for 30 days in our secure WAF logs and then purged.
+    <section class="mb-8">
+        <h2 class="text-xl font-bold mb-3" style="color: var(--text-primary);">1. Data Collection</h2>
+        <p style="color: var(--text-body); line-height: 1.8;">
+            We collect minimal data necessary for site operation and security. This includes:
         </p>
-
-        <h3 class="text-green-500 mb-2">02. COOKIES</h3>
-        <p class="text-gray-400 mb-6">
-            We use a "Zero-Tracking" default state. No analytical cookies are set until you explicitly grant permission.
-            Essential cookies (session tokens) are exempt.
+        <ul style="color: var(--text-body); line-height: 1.8; padding-left: 1.5rem; margin-top: 0.5rem;">
+            <li>IP address and user agent (for security purposes)</li>
+            <li>Information you voluntarily provide via contact forms</li>
+            <li>Email address if you subscribe to our newsletter</li>
+        </ul>
+        <p style="color: var(--text-body); line-height: 1.8; margin-top: 1rem;">
+            Server logs are retained for 30 days for security monitoring and then deleted.
         </p>
+    </section>
 
-        <h3 class="text-green-500 mb-2">03. THIRD PARTIES</h3>
-        <p class="text-gray-400 mb-6">
-            We utilize Hostinger (Infrastructure) and OpenAI (Intelligence Processing).
-            Data sent to OpenAI is anonymized; we do not send PII (Personally Identifiable Information) to AI models.
+    <section class="mb-8">
+        <h2 class="text-xl font-bold mb-3" style="color: var(--text-primary);">2. Cookies</h2>
+        <p style="color: var(--text-body); line-height: 1.8;">
+            We use essential cookies only for site functionality (e.g., session management).
+            We do not use tracking or advertising cookies. If we implement analytics in the future,
+            we will update this policy and request your consent.
         </p>
+    </section>
 
-        <div class="mt-8 p-4 border border-gray-700 bg-gray-900 text-gray-500">
-            To exercise your deletion rights (GDPR/CCPA), contact the Data Controller via the secure channel.
-        </div>
-    </div>
+    <section class="mb-8">
+        <h2 class="text-xl font-bold mb-3" style="color: var(--text-primary);">3. Third-Party Services</h2>
+        <p style="color: var(--text-body); line-height: 1.8;">
+            We use the following third-party services:
+        </p>
+        <ul style="color: var(--text-body); line-height: 1.8; padding-left: 1.5rem; margin-top: 0.5rem;">
+            <li><strong>Hostinger:</strong> Web hosting infrastructure</li>
+            <li><strong>Google Fonts:</strong> Typography (no personal data transmitted)</li>
+        </ul>
+        <p style="color: var(--text-body); line-height: 1.8; margin-top: 1rem;">
+            We do not sell or share your personal information with third parties for marketing purposes.
+        </p>
+    </section>
 
-</div>
+    <section class="mb-8">
+        <h2 class="text-xl font-bold mb-3" style="color: var(--text-primary);">4. Your Rights</h2>
+        <p style="color: var(--text-body); line-height: 1.8;">
+            Under GDPR, CCPA, and similar regulations, you have the right to:
+        </p>
+        <ul style="color: var(--text-body); line-height: 1.8; padding-left: 1.5rem; margin-top: 0.5rem;">
+            <li>Access the personal data we hold about you</li>
+            <li>Request correction of inaccurate data</li>
+            <li>Request deletion of your data</li>
+            <li>Opt out of communications</li>
+        </ul>
+    </section>
+
+    <section style="padding: 1.5rem; background: var(--bg-light); border-radius: 8px;">
+        <h3 style="color: var(--text-primary); font-weight: 600; margin-bottom: 0.5rem;">Contact</h3>
+        <p style="color: var(--text-secondary); font-size: 0.9rem;">
+            To exercise your privacy rights or ask questions about this policy, please
+            <a href="/contact" style="color: var(--brand-primary);">contact us</a>.
+        </p>
+    </section>
+
+</main>
