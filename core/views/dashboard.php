@@ -63,7 +63,7 @@
     <section class="mb-20">
         <div class="flex justify-between items-end mb-8 border-b border-gray-800 pb-4">
             <h3 class="text-2xl font-headline text-white">Latest Analysis</h3>
-            <a href="/research" class="text-neon text-sm hover:underline font-mono">VIEW DATABASE >></a>
+            <a href="/reports" class="text-neon text-sm hover:underline font-mono">VIEW RESEARCH >></a>
         </div>
 
         <div class="bento-grid">
@@ -122,22 +122,55 @@
         <h3 class="text-2xl font-headline text-white mb-8 border-b border-gray-800 pb-4">Key Monitoring Sectors</h3>
         <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
             <a href="/topics?q=economy" class="glass-card p-6 text-center group hover:bg-white/5">
-                <div class="text-4xl mb-4 group-hover:scale-110 transition-transform">📈</div>
+                <div class="mb-4 group-hover:scale-110 transition-transform text-neon">
+                    <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                        stroke-width="1.5">
+                        <polyline points="22 7 13.5 15.5 8.5 10.5 2 17"></polyline>
+                        <polyline points="16 7 22 7 22 13"></polyline>
+                    </svg>
+                </div>
                 <div class="text-white font-bold mb-1">Economy</div>
                 <div class="text-xs text-gray-500">Macro & Trade</div>
             </a>
             <a href="/topics?q=technology" class="glass-card p-6 text-center group hover:bg-white/5">
-                <div class="text-4xl mb-4 group-hover:scale-110 transition-transform">🔋</div>
+                <div class="mb-4 group-hover:scale-110 transition-transform text-neon">
+                    <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                        stroke-width="1.5">
+                        <rect x="4" y="4" width="16" height="16" rx="2" ry="2"></rect>
+                        <rect x="9" y="9" width="6" height="6"></rect>
+                        <line x1="9" y1="1" x2="9" y2="4"></line>
+                        <line x1="15" y1="1" x2="15" y2="4"></line>
+                        <line x1="9" y1="20" x2="9" y2="23"></line>
+                        <line x1="15" y1="20" x2="15" y2="23"></line>
+                        <line x1="20" y1="9" x2="23" y2="9"></line>
+                        <line x1="20" y1="14" x2="23" y2="14"></line>
+                        <line x1="1" y1="9" x2="4" y2="9"></line>
+                        <line x1="1" y1="14" x2="4" y2="14"></line>
+                    </svg>
+                </div>
                 <div class="text-white font-bold mb-1">Technology</div>
                 <div class="text-xs text-gray-500">Semis & AI</div>
             </a>
             <a href="/topics?q=policy" class="glass-card p-6 text-center group hover:bg-white/5">
-                <div class="text-4xl mb-4 group-hover:scale-110 transition-transform">🏛️</div>
+                <div class="mb-4 group-hover:scale-110 transition-transform text-neon">
+                    <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                        stroke-width="1.5">
+                        <line x1="3" y1="21" x2="21" y2="21"></line>
+                        <line x1="6" y1="21" x2="6" y2="10"></line>
+                        <line x1="18" y1="21" x2="18" y2="10"></line>
+                        <polygon points="2 6 12 2 22 6 22 10 2 10 2 6"></polygon>
+                    </svg>
+                </div>
                 <div class="text-white font-bold mb-1">Politics</div>
                 <div class="text-xs text-gray-500">CCP & Policy</div>
             </a>
             <a href="/topics?q=military" class="glass-card p-6 text-center group hover:bg-white/5">
-                <div class="text-4xl mb-4 group-hover:scale-110 transition-transform">🛡️</div>
+                <div class="mb-4 group-hover:scale-110 transition-transform text-neon">
+                    <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                        stroke-width="1.5">
+                        <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+                    </svg>
+                </div>
                 <div class="text-white font-bold mb-1">Defense</div>
                 <div class="text-xs text-gray-500">PLA & Regional</div>
             </a>

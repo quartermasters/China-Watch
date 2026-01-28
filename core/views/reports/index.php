@@ -1082,7 +1082,12 @@ $to_record = min($current_page * $current_limit, $total_results);
         <div id="reports-container">
             <?php if (empty($reports)): ?>
                 <div class="re-empty">
-                    <div class="re-empty-icon">&#128194;</div>
+                    <div class="re-empty-icon">
+                        <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="1.5">
+                            <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path>
+                        </svg>
+                    </div>
                     <h3>No Reports Found</h3>
                     <p>Try adjusting your search or filter criteria.</p>
                 </div>
