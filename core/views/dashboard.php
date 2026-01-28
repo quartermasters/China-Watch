@@ -1,117 +1,147 @@
-<!-- SEO: Screen Reader Only H1 for Dashboard -->
+<!-- Command Center Dashboard -->
 <h1 class="sr-only">China Watch - Independent Research on China's Economy and Policy</h1>
 
-<!-- Hero Section -->
-<section class="hero-section" style="padding: 3rem 0; text-align: center; max-width: 800px; margin: 0 auto;">
-    <h2 class="font-headline" style="font-size: 2.5rem; color: var(--text-primary); margin-bottom: 1rem; line-height: 1.2;">
-        Independent Analysis on China's Economy, Policy & Geopolitics
-    </h2>
-    <p style="color: var(--text-secondary); font-size: 1.1rem; line-height: 1.6; margin-bottom: 2rem;">
-        In-depth research and real-time analysis for policymakers, business leaders, and informed citizens.
-    </p>
-    <div style="display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap;">
-        <a href="/research" class="btn btn-primary" style="padding: 0.75rem 1.5rem;">Browse Research</a>
-        <a href="/topics" class="btn btn-secondary" style="padding: 0.75rem 1.5rem; background: var(--bg-light); color: var(--text-primary); border: 1px solid var(--border-light);">Explore Topics</a>
-    </div>
-</section>
+<div class="container" style="padding-top: 4rem;">
 
-<!-- Key Metrics Strip -->
-<section class="metrics-strip" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin: 2rem 0; padding: 1.5rem; background: var(--bg-light); border-radius: 8px;">
-    <div class="metric-item" style="text-align: center;">
-        <div style="font-size: 0.875rem; color: var(--text-muted);">GDP Growth (YoY)</div>
-        <div style="font-size: 1.75rem; font-weight: 700; color: var(--text-primary);">4.7%</div>
-        <div style="font-size: 0.75rem; color: #EF4444;">-0.2%</div>
-    </div>
-    <div class="metric-item" style="text-align: center;">
-        <div style="font-size: 0.875rem; color: var(--text-muted);">Yuan/USD</div>
-        <div style="font-size: 1.75rem; font-weight: 700; color: var(--text-primary);">7.24</div>
-        <div style="font-size: 0.75rem; color: #10B981;">+0.5%</div>
-    </div>
-    <div class="metric-item" style="text-align: center;">
-        <div style="font-size: 0.875rem; color: var(--text-muted);">Trade Volume</div>
-        <div style="font-size: 1.75rem; font-weight: 700; color: var(--text-primary);">$583B</div>
-        <div style="font-size: 0.75rem; color: #EF4444;">-3.1%</div>
-    </div>
-    <div class="metric-item" style="text-align: center;">
-        <div style="font-size: 0.875rem; color: var(--text-muted);">Manufacturing PMI</div>
-        <div style="font-size: 1.75rem; font-weight: 700; color: var(--text-primary);">49.8</div>
-        <div style="font-size: 0.75rem; color: #EF4444;">-0.3</div>
-    </div>
-</section>
-
-<!-- Featured Research -->
-<section style="margin: 3rem 0;">
-    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
-        <h3 class="font-headline" style="font-size: 1.5rem; color: var(--text-primary); margin: 0;">Latest Research</h3>
-        <a href="/research" style="color: var(--brand-primary); font-size: 0.875rem;">View all</a>
-    </div>
-
-    <div class="bento-grid" style="grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));">
-        <!-- Featured articles will be dynamically loaded here -->
-        <div class="tile" style="padding: 1.5rem;">
-            <span style="color: var(--text-muted); font-size: 0.75rem;">Policy Brief</span>
-            <h4 style="color: var(--text-primary); font-size: 1.25rem; margin: 0.5rem 0; font-weight: 600;">
-                China's 2026 Economic Outlook: Three Scenarios
-            </h4>
-            <p style="color: var(--text-secondary); font-size: 0.875rem; line-height: 1.5;">
-                Analysis of potential economic trajectories as Beijing balances growth targets with structural reforms.
+    <!-- HERO SECTION: Grid Layout -->
+    <section class="grid-hero mb-16">
+        <div class="hero-content">
+            <span class="text-neon font-mono text-sm tracking-widest mb-4 block">// INTELLIGENCE BRIEFING</span>
+            <h2 class="font-headline text-5xl md:text-6xl font-bold leading-tight text-white mb-6">
+                Independent Analysis on <br>
+                <span class="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-blue-500">China's Global
+                    Impact</span>
+            </h2>
+            <p class="text-xl text-gray-400 mb-8 max-w-2xl leading-relaxed">
+                Real-time data and rigorous geopolitical analysis for policymakers, investors, and business leaders
+                navigating the Asian Century.
             </p>
+            <div class="flex gap-4">
+                <a href="/research" class="btn btn-primary"
+                    style="background: var(--brand-primary); color: #000; font-weight: 700; padding: 1rem 2rem; border-radius: 4px; text-transform: uppercase; letter-spacing: 0.05em;">
+                    Access Research
+                </a>
+                <a href="/topics" class="btn glass-panel"
+                    style="color: white; padding: 1rem 2rem; border-radius: 4px; font-weight: 600;">
+                    Explore Topics
+                </a>
+            </div>
         </div>
-        <div class="tile" style="padding: 1.5rem;">
-            <span style="color: var(--text-muted); font-size: 0.75rem;">Commentary</span>
-            <h4 style="color: var(--text-primary); font-size: 1.25rem; margin: 0.5rem 0; font-weight: 600;">
-                Supply Chain Shifts: What Western Companies Need to Know
-            </h4>
-            <p style="color: var(--text-secondary); font-size: 0.875rem; line-height: 1.5;">
-                As diversification accelerates, understanding China's evolving role in global manufacturing.
-            </p>
+
+        <!-- HERO METRICS: Floating Glass Cards -->
+        <div class="hero-visual relative">
+            <!-- Background Glow Effect -->
+            <div
+                style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 300px; height: 300px; background: var(--brand-primary); opacity: 0.15; filter: blur(100px); border-radius: 50%; z-index: -1;">
+            </div>
+
+            <div class="grid grid-cols-2 gap-4">
+                <div class="glass-card p-6">
+                    <div class="text-gray-400 text-xs uppercase tracking-wider mb-2">GDP Growth (YoY)</div>
+                    <div class="text-4xl font-mono font-bold text-white mb-1">4.7%</div>
+                    <div class="text-neon-red text-xs font-mono">-0.2% vs Target</div>
+                </div>
+
+                <div class="glass-card p-6">
+                    <div class="text-gray-400 text-xs uppercase tracking-wider mb-2">Trade Vol</div>
+                    <div class="text-4xl font-mono font-bold text-white mb-1">$583B</div>
+                    <div class="text-neon-red text-xs font-mono">-3.1% MoM</div>
+                </div>
+
+                <div class="glass-card p-6 col-span-2">
+                    <div class="text-gray-400 text-xs uppercase tracking-wider mb-2">Live Alert</div>
+                    <div class="flex items-center gap-3">
+                        <div class="w-2 h-2 rounded-full bg-red-500 animate-pulse"></div>
+                        <div class="text-white font-mono text-sm">Semiconductor Export Controls Update In Effect</div>
+                    </div>
+                </div>
+            </div>
         </div>
-        <div class="tile" style="padding: 1.5rem;">
-            <span style="color: var(--text-muted); font-size: 0.75rem;">Data Analysis</span>
-            <h4 style="color: var(--text-primary); font-size: 1.25rem; margin: 0.5rem 0; font-weight: 600;">
-                Real Estate Sector: Monthly Data Review
-            </h4>
-            <p style="color: var(--text-secondary); font-size: 0.875rem; line-height: 1.5;">
-                Latest property sales, price trends, and policy interventions across major Chinese cities.
-            </p>
+    </section>
+
+    <!-- RESEARCH BENTO GRID -->
+    <section class="mb-20">
+        <div class="flex justify-between items-end mb-8 border-b border-gray-800 pb-4">
+            <h3 class="text-2xl font-headline text-white">Latest Intelligence</h3>
+            <a href="/research" class="text-neon text-sm hover:underline font-mono">VIEW DATABASE >></a>
         </div>
-    </div>
-</section>
 
-<!-- Topic Areas -->
-<section style="margin: 3rem 0;">
-    <h3 class="font-headline" style="font-size: 1.5rem; color: var(--text-primary); margin-bottom: 1.5rem;">Browse by Topic</h3>
-    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 1rem;">
-        <a href="/topics?q=economy" class="topic-card" style="padding: 1.25rem; background: var(--bg-white); border: 1px solid var(--border-light); border-radius: 8px; text-decoration: none; text-align: center;">
-            <div style="font-size: 1.5rem; margin-bottom: 0.5rem;">Economy & Trade</div>
-        </a>
-        <a href="/topics?q=technology" class="topic-card" style="padding: 1.25rem; background: var(--bg-white); border: 1px solid var(--border-light); border-radius: 8px; text-decoration: none; text-align: center;">
-            <div style="font-size: 1.5rem; margin-bottom: 0.5rem;">Technology</div>
-        </a>
-        <a href="/topics?q=policy" class="topic-card" style="padding: 1.25rem; background: var(--bg-white); border: 1px solid var(--border-light); border-radius: 8px; text-decoration: none; text-align: center;">
-            <div style="font-size: 1.5rem; margin-bottom: 0.5rem;">Foreign Policy</div>
-        </a>
-        <a href="/topics?q=politics" class="topic-card" style="padding: 1.25rem; background: var(--bg-white); border: 1px solid var(--border-light); border-radius: 8px; text-decoration: none; text-align: center;">
-            <div style="font-size: 1.5rem; margin-bottom: 0.5rem;">Domestic Politics</div>
-        </a>
-    </div>
-</section>
+        <div class="bento-grid">
+            <!-- Featured Item (Large) -->
+            <div class="glass-card bento-item-large p-8 flex flex-col justify-end"
+                style="min-height: 400px; background: linear-gradient(0deg, rgba(0,0,0,0.9) 0%, rgba(0,0,0,0.4) 50%, transparent 100%), url('/public/assets/images/shanghai-night.jpg') center/cover;">
+                <span class="text-neon text-xs font-bold uppercase mb-2">Strategic Update</span>
+                <h4 class="text-3xl font-bold text-white mb-4 leading-tight">China's 2026 Economic Outlook: Three
+                    Scenarios for Stability</h4>
+                <p class="text-gray-300 mb-6 max-w-lg">Analysis of potential economic trajectories as Beijing balances
+                    growth targets with structural reforms and debt deleveraging.</p>
+                <div class="flex items-center gap-4 text-xs text-gray-500 font-mono">
+                    <span>JAN 24, 2026</span>
+                    <span>//</span>
+                    <span>POLICY BRIEF</span>
+                </div>
+            </div>
 
-<!-- Newsletter CTA -->
-<section style="margin: 3rem 0; padding: 2rem; background: var(--brand-primary); border-radius: 8px; text-align: center;">
-    <h3 style="color: white; font-size: 1.5rem; margin-bottom: 0.5rem;">Stay Informed</h3>
-    <p style="color: rgba(255,255,255,0.8); margin-bottom: 1.5rem;">Get weekly China analysis delivered to your inbox.</p>
-    <a href="/contact" class="btn" style="background: white; color: var(--brand-primary); padding: 0.75rem 2rem; font-weight: 600;">Subscribe to Newsletter</a>
-</section>
+            <!-- Standard Items -->
+            <div class="glass-card bento-item p-6 flex flex-col justify-between">
+                <div>
+                    <span class="text-gray-500 text-xs uppercase mb-2 block">Supply Chain</span>
+                    <h4 class="text-lg font-bold text-white mb-2">Western Manufacturing Exodus: Real Data</h4>
+                </div>
+                <div class="text-xs text-gray-600 font-mono mt-4">COMMENTARY</div>
+            </div>
 
-<style>
-    .topic-card {
-        transition: all 0.2s ease;
-        color: var(--text-primary);
-    }
-    .topic-card:hover {
-        border-color: var(--brand-primary);
-        transform: translateY(-2px);
-        box-shadow: 0 4px 12px rgba(0,0,0,0.05);
-    }
-</style>
+            <div class="glass-card bento-item p-6 flex flex-col justify-between">
+                <div>
+                    <span class="text-gray-500 text-xs uppercase mb-2 block">Real Estate</span>
+                    <h4 class="text-lg font-bold text-white mb-2">Monthly Property Price Index: Tier 1 Shift</h4>
+                </div>
+                <div class="text-xs text-gray-600 font-mono mt-4">DATA BRIEF</div>
+            </div>
+
+            <div class="glass-card bento-item p-6 flex flex-col justify-between">
+                <div>
+                    <span class="text-gray-500 text-xs uppercase mb-2 block">Tech Policy</span>
+                    <h4 class="text-lg font-bold text-white mb-2">New AI Regulations: Impact on Domestic LLMs</h4>
+                </div>
+                <div class="text-xs text-gray-600 font-mono mt-4">REGULATORY</div>
+            </div>
+
+            <div class="glass-card bento-item p-6 flex flex-col justify-between">
+                <div>
+                    <span class="text-gray-500 text-xs uppercase mb-2 block">Energy</span>
+                    <h4 class="text-lg font-bold text-white mb-2">Green Hydrogen Capacity Targets Missed</h4>
+                </div>
+                <div class="text-xs text-gray-600 font-mono mt-4">SECTOR NOTE</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- TOPIC CLUSTERS -->
+    <section class="mb-20">
+        <h3 class="text-2xl font-headline text-white mb-8 border-b border-gray-800 pb-4">Surveillance Targets</h3>
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+            <a href="/topics?q=economy" class="glass-card p-6 text-center group hover:bg-white/5">
+                <div class="text-4xl mb-4 group-hover:scale-110 transition-transform">📈</div>
+                <div class="text-white font-bold mb-1">Economy</div>
+                <div class="text-xs text-gray-500">Macro & Trade</div>
+            </a>
+            <a href="/topics?q=technology" class="glass-card p-6 text-center group hover:bg-white/5">
+                <div class="text-4xl mb-4 group-hover:scale-110 transition-transform">🔋</div>
+                <div class="text-white font-bold mb-1">Technology</div>
+                <div class="text-xs text-gray-500">Semis & AI</div>
+            </a>
+            <a href="/topics?q=policy" class="glass-card p-6 text-center group hover:bg-white/5">
+                <div class="text-4xl mb-4 group-hover:scale-110 transition-transform">🏛️</div>
+                <div class="text-white font-bold mb-1">Politics</div>
+                <div class="text-xs text-gray-500">CCP & Policy</div>
+            </a>
+            <a href="/topics?q=military" class="glass-card p-6 text-center group hover:bg-white/5">
+                <div class="text-4xl mb-4 group-hover:scale-110 transition-transform">🛡️</div>
+                <div class="text-white font-bold mb-1">Defense</div>
+                <div class="text-xs text-gray-500">PLA & Regional</div>
+            </a>
+        </div>
+    </section>
+
+</div>

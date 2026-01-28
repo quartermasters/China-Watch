@@ -77,7 +77,8 @@
         rel="stylesheet">
 
     <!-- CSS (Versioned to force refresh) -->
-    <link rel="stylesheet" href="/css/main.min.css?v=2.1">
+    <!-- CSS (Versioned to force refresh) -->
+    <link rel="stylesheet" href="/css/main.css?v=3.0">
 
     <!-- Schema.org Organization -->
     <script type="application/ld+json">
@@ -144,7 +145,8 @@
         <header class="header">
             <div class="logo">
                 <a href="/" style="text-decoration:none; color:inherit; display:flex; align-items:center; gap:10px;">
-                    <span style="font-family: var(--font-headline); font-size: 1.25rem; font-weight: 700; color: var(--text-primary);">
+                    <span
+                        style="font-family: var(--font-headline); font-size: 1.25rem; font-weight: 700; color: var(--text-primary);">
                         China<span style="color: var(--brand-primary);">Watch</span>
                     </span>
                 </a>
@@ -172,7 +174,8 @@
             </nav>
 
             <div class="header-cta hide-mobile">
-                <a href="/contact" class="btn btn-primary" style="padding: 0.5rem 1rem; font-size: 0.875rem;">Subscribe</a>
+                <a href="/contact" class="btn btn-primary"
+                    style="padding: 0.5rem 1rem; font-size: 0.875rem;">Subscribe</a>
             </div>
         </header>
 

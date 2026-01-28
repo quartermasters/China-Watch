@@ -1,6 +1,10 @@
 <div class="archive-header text-center py-16">
     <h1 class="text-4xl font-headline mb-4">Research & Publications</h1>
     <p class="text-[var(--text-secondary)]">In-depth analysis on China's economy, policy, and geopolitical impact</p>
+    <div class="mt-4 text-xs font-mono text-[var(--text-muted)]">
+        Showing <span class="text-[var(--brand-primary)] font-bold"><?= count($reports) ?></span> of <span
+            class="text-white"><?= $total_results ?? 'MANY' ?></span> Declassified Reports
+    </div>
 </div>
 
 <div class="bento-grid" style="grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));">

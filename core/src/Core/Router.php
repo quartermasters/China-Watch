@@ -7,12 +7,12 @@ class Router
 {
     private array $routes = [];
 
-    public function get(string $path, array $handler): void
+    public function get(string $path, array|callable $handler): void
     {
         $this->routes['GET'][$path] = $handler;
     }
 
-    public function post(string $path, array $handler): void
+    public function post(string $path, array|callable $handler): void
     {
         $this->routes['POST'][$path] = $handler;
     }
@@ -109,9 +109,15 @@ class Router
         // ============================================
 
         if (isset($this->routes[$method][$uri])) {
-            [$class, $function] = $this->routes[$method][$uri];
-            $controller = new $class();
-            $controller->$function();
+            $handler = $this->routes[$method][$uri];
+
+            if (is_array($handler)) {
+                [$class, $function] = $handler;
+                $controller = new $class();
+                $controller->$function();
+            } elseif (is_callable($handler)) {
+                call_user_func($handler);
+            }
         } else {
             http_response_code(404);
             echo "404 - Page Not Found";

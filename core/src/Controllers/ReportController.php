@@ -12,9 +12,11 @@ class ReportController
     public function index(): void
     {
         $reports = DB::query("SELECT id, title, slug, summary, published_at, tags FROM reports ORDER BY published_at DESC LIMIT 20");
+        $total_results = DB::query("SELECT COUNT(*) as count FROM reports")[0]['count'];
 
         View::render('reports/index', [
             'reports' => $reports,
+            'total_results' => $total_results,
             'page_title' => 'Intelligence Archive // China Watch',
             'meta_description' => 'Access the full archive of AI-generated intelligence reports on China\'s economy, industrial sectors, and geopolitical maneuvers.',
             'canonical_url' => 'https://chinawatch.blog/reports'
