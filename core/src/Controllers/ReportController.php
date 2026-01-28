@@ -11,12 +11,36 @@ class ReportController
     // List all reports (Archive)
     public function index(): void
     {
-        $reports = DB::query("SELECT id, title, slug, summary, published_at, tags FROM reports ORDER BY published_at DESC LIMIT 20");
-        $total_results = DB::query("SELECT COUNT(*) as count FROM reports")[0]['count'];
+        // 1. Parameters
+        $page = isset($_GET['page']) ? (int) $_GET['page'] : 1;
+        $limit = 20;
+        $offset = ($page - 1) * $limit;
+        $search = $_GET['q'] ?? null;
+
+        // 2. Build Query
+        if ($search) {
+            // Search Mode
+            $searchTerm = '%' . $search . '%';
+            $reports = DB::query(
+                "SELECT id, title, slug, summary, published_at, tags FROM reports WHERE title LIKE ? OR summary LIKE ? ORDER BY published_at DESC LIMIT $limit OFFSET $offset",
+                [$searchTerm, $searchTerm]
+            );
+            $total_results = DB::query("SELECT COUNT(*) as count FROM reports WHERE title LIKE ? OR summary LIKE ?", [$searchTerm, $searchTerm])[0]['count'];
+        } else {
+            // Normal Mode
+            $reports = DB::query("SELECT id, title, slug, summary, published_at, tags FROM reports ORDER BY published_at DESC LIMIT $limit OFFSET $offset");
+            $total_results = DB::query("SELECT COUNT(*) as count FROM reports")[0]['count'];
+        }
+
+        // 3. Pagination Data
+        $total_pages = ceil($total_results / $limit);
 
         View::render('reports/index', [
             'reports' => $reports,
             'total_results' => $total_results,
+            'current_page' => $page,
+            'total_pages' => $total_pages,
+            'search_query' => $search,
             'page_title' => 'Intelligence Archive // China Watch',
             'meta_description' => 'Access the full archive of AI-generated intelligence reports on China\'s economy, industrial sectors, and geopolitical maneuvers.',
             'canonical_url' => 'https://chinawatch.blog/reports'
