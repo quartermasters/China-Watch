@@ -12,48 +12,33 @@ class EntitiesController
     {
         // Search Filter
         $search = $_GET['q'] ?? '';
-        $whereClause = '';
-        $params = [];
 
-        if (!empty($search)) {
-            $whereClause = "WHERE e.name LIKE ?";
-            $params[] = "%$search%";
-        }
+        // Fetch all tags from actively published reports
+        $rows = DB::query("SELECT tags FROM reports WHERE tags IS NOT NULL AND tags != ''");
 
-        // Fetch top entities by frequency of appearance in reports
-        // We join report_entities to count occurrences
-        $sql = "
-            SELECT e.*, COUNT(re.report_id) as report_count 
-            FROM entities e
-            LEFT JOIN report_entities re ON e.id = re.entity_id
-            $whereClause
-            GROUP BY e.id
-            ORDER BY report_count DESC
-            LIMIT 100
-        ";
-
-        $entities = DB::query($sql, $params);
-
-        // Group by Type for the UI
-        $grouped = [
-            'ORG' => [],
-            'PERSON' => [],
-            'GPE' => [],
-            'OTHER' => []
-        ];
-
-        foreach ($entities as $entity) {
-            $type = strtoupper($entity['type']);
-            if (isset($grouped[$type])) {
-                $grouped[$type][] = $entity;
-            } else {
-                $grouped['OTHER'][] = $entity;
+        $tagCounts = [];
+        foreach ($rows as $row) {
+            $tags = json_decode($row['tags'], true);
+            if (is_array($tags)) {
+                foreach ($tags as $t) {
+                    $t = trim($t);
+                    if ($t !== '') {
+                        // Filter by search query if present
+                        if ($search && stripos($t, $search) === false) {
+                            continue;
+                        }
+                        $tagCounts[$t] = ($tagCounts[$t] ?? 0) + 1;
+                    }
+                }
             }
         }
 
+        // Sort by frequency (descending)
+        arsort($tagCounts);
+
         View::render('entities', [
-            'page_title' => 'Known Entities - China Watch',
-            'grouped_entities' => $grouped,
+            'page_title' => 'Topics & Issues - China Watch',
+            'topics' => $tagCounts,
             'search_query' => $search
         ]);
     }
