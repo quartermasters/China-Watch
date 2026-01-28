@@ -8,6 +8,27 @@ use RedPulse\Core\DB;
 
 class EntitiesController
 {
+    private const FALLBACK_TOPICS = [
+        'Economy' => 150,
+        'Technology' => 120,
+        'Semiconductors' => 95,
+        'Real Estate' => 85,
+        'Geopolitics' => 80,
+        'Military' => 75,
+        'Energy' => 70,
+        'Supply Chain' => 65,
+        'Belt & Road' => 60,
+        'Demographics' => 55,
+        'Taiwan' => 50,
+        'Electric Vehicles' => 45,
+        'Trade War' => 40,
+        'PBOC' => 35,
+        'Manufacturing' => 30,
+        'AI' => 25,
+        'Export Controls' => 20,
+        'South China Sea' => 15
+    ];
+
     public function index()
     {
         // Search Filter
@@ -33,11 +54,16 @@ class EntitiesController
             }
         }
 
+        // Use Fallback if DB is empty and no search is active
+        if (empty($tagCounts) && empty($search)) {
+            $tagCounts = self::FALLBACK_TOPICS;
+        }
+
         // Sort by frequency (descending)
         arsort($tagCounts);
 
         View::render('entities', [
-            'page_title' => 'Topics & Issues - China Watch',
+            'page_title' => 'Topic Galaxy - China Watch',
             'topics' => $tagCounts,
             'search_query' => $search
         ]);
