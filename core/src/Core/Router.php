@@ -97,6 +97,13 @@ class Router
             return;
         }
 
+        // /api/reports - Reports JSON API
+        if ($uri === '/api/reports') {
+            $controller = new \RedPulse\Controllers\ReportController();
+            $controller->apiIndex();
+            return;
+        }
+
         // /api/anomaly/{id} - Anomaly Details
         if (preg_match('#^/api/anomaly/([a-zA-Z0-9-_]+)$#', $uri, $matches)) {
             $controller = new \RedPulse\Controllers\DashboardController();

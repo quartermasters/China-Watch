@@ -6,7 +6,7 @@
     <!-- HERO SECTION: Grid Layout -->
     <section class="grid-hero mb-16">
         <div class="hero-content">
-            <span class="text-neon font-mono text-sm tracking-widest mb-4 block">// INTELLIGENCE BRIEFING</span>
+            <span class="text-neon font-mono text-sm tracking-widest mb-4 block">// RESEARCH BRIEF</span>
             <h2 class="font-headline text-5xl md:text-6xl font-bold leading-tight text-white mb-6">
                 Independent Analysis on <br>
                 <span class="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-blue-500">China's Global
@@ -49,7 +49,7 @@
                 </div>
 
                 <div class="glass-card p-6 col-span-2">
-                    <div class="text-gray-400 text-xs uppercase tracking-wider mb-2">Live Alert</div>
+                    <div class="text-gray-400 text-xs uppercase tracking-wider mb-2">Policy Alert</div>
                     <div class="flex items-center gap-3">
                         <div class="w-2 h-2 rounded-full bg-red-500 animate-pulse"></div>
                         <div class="text-white font-mono text-sm">Semiconductor Export Controls Update In Effect</div>
@@ -62,7 +62,7 @@
     <!-- RESEARCH BENTO GRID -->
     <section class="mb-20">
         <div class="flex justify-between items-end mb-8 border-b border-gray-800 pb-4">
-            <h3 class="text-2xl font-headline text-white">Latest Intelligence</h3>
+            <h3 class="text-2xl font-headline text-white">Latest Analysis</h3>
             <a href="/research" class="text-neon text-sm hover:underline font-mono">VIEW DATABASE >></a>
         </div>
 
@@ -119,7 +119,7 @@
 
     <!-- TOPIC CLUSTERS -->
     <section class="mb-20">
-        <h3 class="text-2xl font-headline text-white mb-8 border-b border-gray-800 pb-4">Surveillance Targets</h3>
+        <h3 class="text-2xl font-headline text-white mb-8 border-b border-gray-800 pb-4">Key Monitoring Sectors</h3>
         <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
             <a href="/topics?q=economy" class="glass-card p-6 text-center group hover:bg-white/5">
                 <div class="text-4xl mb-4 group-hover:scale-110 transition-transform">📈</div>
