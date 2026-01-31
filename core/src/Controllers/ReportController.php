@@ -12,7 +12,7 @@ class ReportController
     private const ALLOWED_SORTS = [
         'newest' => ['published_at', 'DESC'],
         'oldest' => ['published_at', 'ASC'],
-        'views'  => ['views', 'DESC'],
+        'views' => ['views', 'DESC'],
         'title_az' => ['title', 'ASC'],
         'title_za' => ['title', 'DESC'],
     ];
@@ -193,6 +193,13 @@ class ReportController
     // Show single report (Medium-style)
     public function show(string $slug): void
     {
+        // Access Control
+        if (!\RedPulse\Services\AuthService::isLoggedIn()) {
+            $_SESSION['login_redirect'] = $_SERVER['REQUEST_URI'];
+            header('Location: /auth/login');
+            exit;
+        }
+
         // Security: Slug is safe for string query usually, but parameterized is best
         $data = DB::query("SELECT * FROM reports WHERE slug = ? LIMIT 1", [$slug]);
 

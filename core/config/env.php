@@ -14,6 +14,10 @@ define('OPENAI_API_KEY', 'YOUR_OPENAI_API_KEY');
 define('SERPAPI_KEY', 'bfd194826c78c58b8858ca8f545491b08ed1ed20262c5a2d8ccc77e7c7eb5d5b'); // 250 searches/month
 define('PERPLEXITY_API_KEY', 'YOUR_PERPLEXITY_API_KEY_HERE'); // Sonar API
 
+// OAuth - Google
+define('GOOGLE_OAUTH_CLIENT_ID', 'YOUR_CLIENT_ID');
+define('GOOGLE_OAUTH_CLIENT_SECRET', 'YOUR_CLIENT_SECRET');
+
 // Cloudinary (Smart Image Cropping with Face Detection)
 // Sign up free at: https://cloudinary.com
 // Find credentials at: Dashboard > Account Details

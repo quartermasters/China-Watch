@@ -4,6 +4,38 @@ declare(strict_types=1);
 // Load Configuration
 require_once __DIR__ . '/../config/env.php';
 
+// Load Composer Autoloader (Critical for Google Client)
+$vendorPaths = [
+    __DIR__ . '/../../vendor/autoload.php',
+    $_SERVER['DOCUMENT_ROOT'] . '/vendor/autoload.php',
+    dirname(__DIR__, 2) . '/vendor/autoload.php'
+];
+
+$autoloadLoaded = false;
+foreach ($vendorPaths as $path) {
+    if (file_exists($path)) {
+        require_once $path;
+        $autoloadLoaded = true;
+        break;
+    }
+}
+
+// IF this block triggers, it means the vendor folder is missing or in the wrong place
+if (!$autoloadLoaded) {
+    header('Content-Type: text/plain');
+    echo "CRITICAL ERROR: 'vendor' folder not found.\n";
+    echo "I looked in:\n";
+    foreach ($vendorPaths as $p) {
+        echo "- $p\n";
+    }
+    die("\nPlease upload the 'vendor' folder from your computer to your public_html folder.");
+}
+
+// Start Session
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
+
 // Valid PHP Version Check
 if (version_compare(PHP_VERSION, '8.1.0', '<')) {
     die('China Watch requires PHP 8.1 or higher.');

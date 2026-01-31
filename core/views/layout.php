@@ -174,8 +174,20 @@
             </nav>
 
             <div class="header-cta hide-mobile">
-                <a href="/contact" class="btn btn-primary"
-                    style="padding: 0.5rem 1rem; font-size: 0.875rem;">Subscribe</a>
+                <?php if (\RedPulse\Services\AuthService::isLoggedIn()): ?>
+                    <?php $user = \RedPulse\Services\AuthService::getUser(); ?>
+                    <div style="display:flex; align-items:center; gap:12px;">
+                        <?php if (!empty($user['avatar'])): ?>
+                            <img src="<?= htmlspecialchars($user['avatar']) ?>"
+                                style="width:32px; height:32px; border-radius:50%; border:1px solid var(--border-light);">
+                        <?php endif; ?>
+                        <a href="/auth/logout" class="btn btn-outline"
+                            style="padding: 0.5rem 1rem; font-size: 0.875rem; border: 1px solid var(--border-light); color: var(--text-primary); text-decoration: none;">Logout</a>
+                    </div>
+                <?php else: ?>
+                    <a href="/auth/login" class="btn btn-primary"
+                        style="padding: 0.5rem 1rem; font-size: 0.875rem;">Login</a>
+                <?php endif; ?>
             </div>
         </header>
 

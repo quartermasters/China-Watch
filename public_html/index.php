@@ -68,6 +68,14 @@ $router->get('/sitemap-entities.xml', [\RedPulse\Controllers\SitemapController::
 $router->get('/sitemap-tags.xml', [\RedPulse\Controllers\SitemapController::class, 'tags']);
 
 // ============================================
+// Auth Routes
+// ============================================
+$router->get('/auth/login', [\RedPulse\Controllers\AuthController::class, 'login']);
+$router->get('/auth/google', [\RedPulse\Controllers\AuthController::class, 'google']);
+$router->get('/auth/google/callback', [\RedPulse\Controllers\AuthController::class, 'cbGoogle']);
+$router->get('/auth/logout', [\RedPulse\Controllers\AuthController::class, 'logout']);
+
+// ============================================
 // API Endpoints
 // ============================================
 $router->get('/api/ticker', [DashboardController::class, 'ticker']);

@@ -104,6 +104,13 @@ class Router
             return;
         }
 
+        // /api/topics - Topics JSON API
+        if ($uri === '/api/topics') {
+            $controller = new \RedPulse\Controllers\EntitiesController();
+            $controller->apiIndex();
+            return;
+        }
+
         // /api/anomaly/{id} - Anomaly Details
         if (preg_match('#^/api/anomaly/([a-zA-Z0-9-_]+)$#', $uri, $matches)) {
             $controller = new \RedPulse\Controllers\DashboardController();
